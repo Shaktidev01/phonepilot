@@ -14,11 +14,11 @@
 
 from unittest.mock import AsyncMock, MagicMock, patch
 
-from artemis.context import ArtemisContext
-from artemis.drivers.base import BaseDeviceDriver
-from artemis.graph.state import State
-from artemis.tools.base import ArtemisTool
-from artemis.tools.mobile.launch_app import (
+from phonepilot.context import PhonePilotContext
+from phonepilot.drivers.base import BaseDeviceDriver
+from phonepilot.graph.state import State
+from phonepilot.tools.base import PhonePilotTool
+from phonepilot.tools.mobile.launch_app import (
     LaunchApp,
     LaunchAppArgs,
     LaunchAppTool,
@@ -32,7 +32,7 @@ import pytest
 
 @pytest.fixture
 def mock_ctx():
-    ctx = MagicMock(spec=ArtemisContext)
+    ctx = MagicMock(spec=PhonePilotContext)
     ctx.package_cache = {}
     return ctx
 
@@ -50,10 +50,10 @@ def mock_state():
 
 
 def test_launch_app_tool_subclass():
-    """Verify LaunchAppTool is a subclass of ArtemisTool."""
-    assert issubclass(LaunchAppTool, ArtemisTool)
-    assert issubclass(LaunchApp, ArtemisTool)
-    assert isinstance(launch_app, ArtemisTool)
+    """Verify LaunchAppTool is a subclass of PhonePilotTool."""
+    assert issubclass(LaunchAppTool, PhonePilotTool)
+    assert issubclass(LaunchApp, PhonePilotTool)
+    assert isinstance(launch_app, PhonePilotTool)
     assert isinstance(launch_app, LaunchAppTool)
 
     assert launch_app.name == "launch_app"
@@ -80,15 +80,15 @@ async def test_launch_app_direct_execution_with_driver(mock_driver):
 
 @pytest.mark.asyncio
 async def test_launch_app_direct_execution_with_ctx(mock_ctx):
-    """Verify direct execution with ArtemisContext."""
+    """Verify direct execution with PhonePilotContext."""
     with (
         patch(
-            "artemis.tools.mobile.launch_app.find_package",
+            "phonepilot.tools.mobile.launch_app.find_package",
             new_callable=AsyncMock,
             return_value="com.example.myapp",
         ) as mock_find,
         patch(
-            "artemis.tools.mobile.launch_app.launch_app_with_retries",
+            "phonepilot.tools.mobile.launch_app.launch_app_with_retries",
             new_callable=AsyncMock,
             return_value=(True, None),
         ) as mock_launch,
@@ -103,7 +103,7 @@ async def test_launch_app_direct_execution_with_ctx(mock_ctx):
 async def test_launch_app_package_not_found(mock_ctx):
     """Verify outcome when package is not found."""
     with patch(
-        "artemis.tools.mobile.launch_app.find_package",
+        "phonepilot.tools.mobile.launch_app.find_package",
         new_callable=AsyncMock,
         return_value=None,
     ):
@@ -116,12 +116,12 @@ async def test_launch_app_execution_failure(mock_ctx):
     """Verify outcome when launch_app_with_retries fails."""
     with (
         patch(
-            "artemis.tools.mobile.launch_app.find_package",
+            "phonepilot.tools.mobile.launch_app.find_package",
             new_callable=AsyncMock,
             return_value="com.example.failapp",
         ),
         patch(
-            "artemis.tools.mobile.launch_app.launch_app_with_retries",
+            "phonepilot.tools.mobile.launch_app.launch_app_with_retries",
             new_callable=AsyncMock,
             return_value=(False, "App crashed on startup"),
         ),
@@ -135,12 +135,12 @@ async def test_launch_app_with_state_command(mock_ctx, mock_state):
     """Verify LaunchAppTool returns ToolMessage when state is provided."""
     with (
         patch(
-            "artemis.tools.mobile.launch_app.find_package",
+            "phonepilot.tools.mobile.launch_app.find_package",
             new_callable=AsyncMock,
             return_value="com.example.stateapp",
         ),
         patch(
-            "artemis.tools.mobile.launch_app.launch_app_with_retries",
+            "phonepilot.tools.mobile.launch_app.launch_app_with_retries",
             new_callable=AsyncMock,
             return_value=(True, None),
         ),
@@ -181,12 +181,12 @@ async def test_get_launch_app_tool_langchain_ainvoke(mock_ctx):
 
     with (
         patch(
-            "artemis.tools.mobile.launch_app.find_package",
+            "phonepilot.tools.mobile.launch_app.find_package",
             new_callable=AsyncMock,
             return_value="com.example.ainvoke",
         ),
         patch(
-            "artemis.tools.mobile.launch_app.launch_app_with_retries",
+            "phonepilot.tools.mobile.launch_app.launch_app_with_retries",
             new_callable=AsyncMock,
             return_value=(True, None),
         ),

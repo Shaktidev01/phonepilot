@@ -18,7 +18,7 @@ from dataclasses import dataclass
 import httpx
 from app.config import settings
 
-logger = logging.getLogger("artemis.orchestrator")
+logger = logging.getLogger("phonepilot.orchestrator")
 
 
 @dataclass
@@ -142,17 +142,17 @@ class CloudOrchestratorService:
     ) -> CuttlefishInstanceInfo:
         """
         Main entrypoint:
-        1. Find an available running emulator not bound to any active Artemis session.
+        1. Find an available running emulator not bound to any active PhonePilot session.
         2. If none available, provision a new emulator via Host Orchestrator.
         3. Dynamically extract the chosen emulator's ADB port (no static/default port assumptions).
-        4. Bind the emulator to the Artemis session.
+        4. Bind the emulator to the PhonePilot session.
         """
         async with self._lock:
             # Check if this session already has an allocated instance
             if session_id in self._allocated_instances:
                 return self._allocated_instances[session_id]
 
-            # 1. Get emulator list that is not used by other artemis containers
+            # 1. Get emulator list that is not used by other phonepilot containers
             available = await self.list_available_emulators()
 
             chosen_cvd = None
@@ -185,7 +185,7 @@ class CloudOrchestratorService:
             adb_port = int(adb_port)
             logger.info(f"[Cloud Orchestrator] Dynamic ADB port for '{emulator_name}': {adb_port}")
 
-            # 3. Bind the emulator to the Artemis session instance
+            # 3. Bind the emulator to the PhonePilot session instance
             host = settings.CUTTLEFISH_HOST_GATEWAY
             info = CuttlefishInstanceInfo(
                 instance_id=emulator_name,
@@ -202,7 +202,7 @@ class CloudOrchestratorService:
             return info
 
     async def destroy_cuttlefish_instance(self, session_id: str) -> None:
-        """Unbind emulator from session so it returns to the free pool for other Artemis containers."""
+        """Unbind emulator from session so it returns to the free pool for other PhonePilot containers."""
         async with self._lock:
             info = self._allocated_instances.pop(session_id, None)
             if not info:

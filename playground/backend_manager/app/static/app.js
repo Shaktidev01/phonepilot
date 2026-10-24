@@ -1,5 +1,5 @@
-// Artemis Cloud Client Workspace Application
-let authToken = localStorage.getItem("artemis_jwt_token");
+// PhonePilot Cloud Client Workspace Application
+let authToken = localStorage.getItem("phonepilot_jwt_token");
 let currentUser = null;
 let currentSession = null;
 let heartbeatInterval = null;
@@ -90,7 +90,7 @@ verifyOtpBtn.addEventListener("click", async () => {
     const data = await res.json();
     if (res.ok && data.access_token) {
       authToken = data.access_token;
-      localStorage.setItem("artemis_jwt_token", authToken);
+      localStorage.setItem("phonepilot_jwt_token", authToken);
       hideAuthModal();
       await verifyTokenAndInit();
     } else {
@@ -121,7 +121,7 @@ async function verifyTokenAndInit() {
     // Check for existing sessions or create new
     await checkActiveSessions();
   } catch (e) {
-    localStorage.removeItem("artemis_jwt_token");
+    localStorage.removeItem("phonepilot_jwt_token");
     authToken = null;
     showAuthModal();
   }
@@ -146,7 +146,7 @@ async function checkActiveSessions() {
 }
 
 async function createSession() {
-  appendLog("System", "Provisioning Cuttlefish emulator and starting Artemis container...");
+  appendLog("System", "Provisioning Cuttlefish emulator and starting PhonePilot container...");
   deviceStatus.innerText = "Provisioning...";
   agentStatus.innerText = "Starting...";
 
@@ -183,15 +183,15 @@ async function attachSession(sessionId) {
   deviceStatus.innerText = "Active (Connected)";
   agentStatus.innerText = "Ready";
 
-  // Connect live device screen stream from Artemis
+  // Connect live device screen stream from PhonePilot
   initDeviceStream(currentSession);
 
   // Start client heartbeat
   if (heartbeatInterval) clearInterval(heartbeatInterval);
   heartbeatInterval = setInterval(() => sendHeartbeat(sessionId), 30000);
 
-  // Connect to Artemis SSE Stream via Nginx route
-  connectArtemisStream(currentSession.artemis_stream_url);
+  // Connect to PhonePilot SSE Stream via Nginx route
+  connectPhonePilotStream(currentSession.phonepilot_stream_url);
 }
 
 function initDeviceStream(session) {
@@ -212,11 +212,11 @@ function initDeviceStream(session) {
       : `${session.cuttlefish_webrtc_url}`;
   } else if (streamImg) {
     streamImg.classList.remove("hidden");
-    streamImg.src = `${session.artemis_api_url}api/stream/device-live`;
+    streamImg.src = `${session.phonepilot_api_url}api/stream/device-live`;
   }
 }
 
-function connectArtemisStream(streamUrl) {
+function connectPhonePilotStream(streamUrl) {
   if (eventSource) eventSource.close();
   try {
     eventSource = new EventSource(streamUrl);
@@ -252,7 +252,7 @@ async function sendHeartbeat(sessionId) {
   } catch (e) {}
 }
 
-// 4. Dispatch Task to Artemis
+// 4. Dispatch Task to PhonePilot
 sendTaskBtn.addEventListener("click", () => sendTask());
 taskInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") sendTask();
@@ -267,8 +267,8 @@ async function sendTask() {
   agentStatus.innerText = "Reasoning...";
 
   try {
-    // Send task through Nginx routed Artemis /api/run endpoint
-    const res = await fetch(`${currentSession.artemis_api_url}api/run`, {
+    // Send task through Nginx routed PhonePilot /api/run endpoint
+    const res = await fetch(`${currentSession.phonepilot_api_url}api/run`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -277,7 +277,7 @@ async function sendTask() {
     });
 
     if (res.ok) {
-      appendLog("System", "Task successfully dispatched to Artemis agent.");
+      appendLog("System", "Task successfully dispatched to PhonePilot agent.");
       agentStatus.innerText = "Executing...";
     } else {
       const err = await res.json().catch(() => ({ detail: res.statusText }));

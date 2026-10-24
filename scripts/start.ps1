@@ -31,7 +31,7 @@ $RootDir = Split-Path -Parent $ScriptDir
 Set-Location $RootDir
 
 Write-Host "======================================================" -ForegroundColor Cyan
-Write-Host "       Artemis Autonomous Mobile Agent UI           " -ForegroundColor Cyan
+Write-Host "       PhonePilot Autonomous Mobile Agent UI           " -ForegroundColor Cyan
 Write-Host "======================================================" -ForegroundColor Cyan
 Write-Host ""
 
@@ -456,7 +456,7 @@ if ((-not (Test-Path $ShowcaseIndex)) -and (-not (Test-Path $ShowcaseIndexAlt1))
 
 # 7. Optionally configure MCP for detected AI IDEs
 Write-Host ""
-Write-Host "   [INFO] Would you like to configure ARTEMIS MCP & testing rules for your AI IDEs?" -ForegroundColor Cyan
+Write-Host "   [INFO] Would you like to configure PhonePilot MCP & testing rules for your AI IDEs?" -ForegroundColor Cyan
 Write-Host "      (Supported: Antigravity, Cursor, Claude Code/Desktop, Codex, OpenClaw, Windsurf)"
 $installMcp = "Y"
 if ([Console]::IsInputRedirected -eq $false) {
@@ -470,15 +470,15 @@ if ([Console]::IsInputRedirected -eq $false) {
 
 if ($installMcp -match "^[Yy]") {
     Write-Host "   Installing MCP server configuration & testing rules..." -ForegroundColor Cyan
-    uv run python -m artemis mcp --install all
+    uv run python -m phonepilot mcp --install all
     if ($LASTEXITCODE -eq 0) {
         Write-Host "   [OK] MCP configuration and rules installed successfully." -ForegroundColor Green
-        Write-Host "   [TIP] You can update or re-install anytime with: uv run artemis mcp --install all" -ForegroundColor Cyan
+        Write-Host "   [TIP] You can update or re-install anytime with: uv run phonepilot mcp --install all" -ForegroundColor Cyan
     } else {
-        Write-Host "   [WARN] MCP installation failed. Review the error above and retry with: uv run artemis mcp --install all" -ForegroundColor Yellow
+        Write-Host "   [WARN] MCP installation failed. Review the error above and retry with: uv run phonepilot mcp --install all" -ForegroundColor Yellow
     }
 } else {
-    Write-Host "   [SKIP] You can install MCP anytime later with: uv run artemis mcp --install all" -ForegroundColor Yellow
+    Write-Host "   [SKIP] You can install MCP anytime later with: uv run phonepilot mcp --install all" -ForegroundColor Yellow
 }
 Write-Host ""
 
@@ -486,13 +486,13 @@ Write-Host ""
 # Ensure local ADB daemon is warm & listening
 Start-LocalAdbServer
 
-# Launch via `python -m artemis` (not the `artemis.exe` console-script shim) so the
-# long-running server never locks .venv\Scripts\artemis.exe against `uv sync` reinstalls.
-Write-Host "   [INFO] Launching Artemis Showcase UI & Admin Console..." -ForegroundColor Green
+# Launch via `python -m phonepilot` (not the `phonepilot.exe` console-script shim) so the
+# long-running server never locks .venv\Scripts\phonepilot.exe against `uv sync` reinstalls.
+Write-Host "   [INFO] Launching PhonePilot Showcase UI & Admin Console..." -ForegroundColor Green
 if ($NoOpen) {
-    uv run python -m artemis ui --port $Port --no-open
+    uv run python -m phonepilot ui --port $Port --no-open
 } else {
-    uv run python -m artemis ui --port $Port --open
+    uv run python -m phonepilot ui --port $Port --open
 }
 
 if ($LASTEXITCODE -ne 0) {

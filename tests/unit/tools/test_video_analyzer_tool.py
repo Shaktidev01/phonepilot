@@ -14,10 +14,10 @@
 
 from unittest.mock import AsyncMock, MagicMock, patch
 
-from artemis.context import ArtemisContext
-from artemis.graph.state import State
-from artemis.tools.base import ArtemisTool
-from artemis.tools.video_tool import (
+from phonepilot.context import PhonePilotContext
+from phonepilot.graph.state import State
+from phonepilot.tools.base import PhonePilotTool
+from phonepilot.tools.video_tool import (
     DIAGNOSER_VIDEO_ANALYZER_DOCSTRING,
     OPERATOR_VIDEO_ANALYZER_DOCSTRING,
     VideoAnalyzerArgs,
@@ -32,7 +32,7 @@ import pytest
 
 @pytest.fixture
 def mock_ctx():
-    ctx = MagicMock(spec=ArtemisContext)
+    ctx = MagicMock(spec=PhonePilotContext)
     return ctx
 
 
@@ -42,9 +42,9 @@ def mock_state():
 
 
 def test_video_analyzer_tool_subclass():
-    """Verify VideoAnalyzerTool is a subclass of ArtemisTool."""
-    assert issubclass(VideoAnalyzerTool, ArtemisTool)
-    assert isinstance(video_analyzer, ArtemisTool)
+    """Verify VideoAnalyzerTool is a subclass of PhonePilotTool."""
+    assert issubclass(VideoAnalyzerTool, PhonePilotTool)
+    assert isinstance(video_analyzer, PhonePilotTool)
     assert isinstance(video_analyzer, VideoAnalyzerTool)
 
     assert video_analyzer.name == "video_analyzer"
@@ -62,7 +62,7 @@ def test_video_analyzer_tool_subclass():
 async def test_video_analyzer_direct_execution_success(mock_ctx):
     """Verify direct execution of VideoAnalyzerTool.execute returns outcome directly."""
     with patch(
-        "artemis.tools.video_tool.VideoAnalyzer.run",
+        "phonepilot.tools.video_tool.VideoAnalyzer.run",
         new_callable=AsyncMock,
         return_value=("Video analysis success details", "success"),
     ):
@@ -78,7 +78,7 @@ async def test_video_analyzer_direct_execution_success(mock_ctx):
 async def test_video_analyzer_direct_execution_failed(mock_ctx):
     """Verify direct execution handles failed status properly."""
     with patch(
-        "artemis.tools.video_tool.VideoAnalyzer.run",
+        "phonepilot.tools.video_tool.VideoAnalyzer.run",
         new_callable=AsyncMock,
         return_value=("Could not find target element", "failed"),
     ):
@@ -94,7 +94,7 @@ async def test_video_analyzer_direct_execution_failed(mock_ctx):
 async def test_video_analyzer_with_state_command(mock_ctx, mock_state):
     """Verify execute returns a ToolMessage when state is provided."""
     with patch(
-        "artemis.tools.video_tool.VideoAnalyzer.run",
+        "phonepilot.tools.video_tool.VideoAnalyzer.run",
         new_callable=AsyncMock,
         return_value=("Action verified in video", "success"),
     ):
@@ -115,7 +115,7 @@ async def test_video_analyzer_with_state_command(mock_ctx, mock_state):
 async def test_video_analyzer_exception_handling(mock_ctx, mock_state):
     """Verify execute gracefully handles exceptions."""
     with patch(
-        "artemis.tools.video_tool.VideoAnalyzer.run",
+        "phonepilot.tools.video_tool.VideoAnalyzer.run",
         new_callable=AsyncMock,
         side_effect=RuntimeError("Video processing error"),
     ):
@@ -144,7 +144,7 @@ async def test_video_analyzer_exception_handling(mock_ctx, mock_state):
 async def test_video_analyzer_callable_execution(mock_ctx):
     """Verify invoking video_analyzer directly as a callable."""
     with patch(
-        "artemis.tools.video_tool.VideoAnalyzer.run",
+        "phonepilot.tools.video_tool.VideoAnalyzer.run",
         new_callable=AsyncMock,
         return_value=("Callable output", "success"),
     ):
@@ -174,7 +174,7 @@ async def test_get_video_analyzer_tool_pure_ainvoke(mock_ctx):
     assert pure_tool.name == "video_analyzer"
 
     with patch(
-        "artemis.tools.video_tool.VideoAnalyzer.run",
+        "phonepilot.tools.video_tool.VideoAnalyzer.run",
         new_callable=AsyncMock,
         return_value=("Pure tool output", "success"),
     ):

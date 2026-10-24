@@ -6,9 +6,9 @@ from types import SimpleNamespace
 from langchain_core.messages import AIMessage, AIMessageChunk
 import pytest
 
-from artemis.llm.reliability import LLMExhaustedError, LLMPermanentError
-from artemis.services import llm as llm_service
-from artemis.services.llm import (
+from phonepilot.llm.reliability import LLMExhaustedError, LLMPermanentError
+from phonepilot.services import llm as llm_service
+from phonepilot.services.llm import (
     RobustChatModelWrapper,
     acomplete,
     acomplete_structured,
@@ -21,7 +21,7 @@ from third_party.mobile_use.llm_service import WAITING_MESSAGE, LLMWaitNotice
 def _isolate_gateway_state(monkeypatch, tmp_path):
     llm_service._ENDPOINT_BREAKER._states.clear()
     llm_service._NON_STREAMING_ENDPOINTS.clear()
-    monkeypatch.setattr(llm_service, "PAUSE_FILE", tmp_path / ".artemis_paused")
+    monkeypatch.setattr(llm_service, "PAUSE_FILE", tmp_path / ".phonepilot_paused")
     monkeypatch.setattr(
         llm_service,
         "retry_policy_for",

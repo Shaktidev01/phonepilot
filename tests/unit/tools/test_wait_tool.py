@@ -16,9 +16,9 @@ import asyncio
 import time
 from unittest.mock import AsyncMock, MagicMock
 
-from artemis.context import ArtemisContext
-from artemis.tools.base import ArtemisTool
-from artemis.tools.wait_tool import (
+from phonepilot.context import PhonePilotContext
+from phonepilot.tools.base import PhonePilotTool
+from phonepilot.tools.wait_tool import (
     Wait,
     WaitArgs,
     WaitTool,
@@ -31,15 +31,15 @@ import pytest
 
 @pytest.fixture
 def mock_ctx():
-    ctx = MagicMock(spec=ArtemisContext)
+    ctx = MagicMock(spec=PhonePilotContext)
     return ctx
 
 
 def test_wait_tool_subclass():
-    """Verify WaitTool is a subclass of ArtemisTool."""
-    assert issubclass(WaitTool, ArtemisTool)
-    assert issubclass(Wait, ArtemisTool)
-    assert isinstance(wait, ArtemisTool)
+    """Verify WaitTool is a subclass of PhonePilotTool."""
+    assert issubclass(WaitTool, PhonePilotTool)
+    assert issubclass(Wait, PhonePilotTool)
+    assert isinstance(wait, PhonePilotTool)
     assert isinstance(wait, WaitTool)
 
     assert wait.name == "wait"

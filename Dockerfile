@@ -26,17 +26,17 @@ RUN npm run build
 FROM python:3.12-slim AS wheel-builder
 
 WORKDIR /build
-COPY artemis/ ./artemis/
+COPY phonepilot/ ./phonepilot/
 COPY apps/ ./apps/
 COPY mcp_server/ ./mcp_server/
 COPY third_party/ ./third_party/
-COPY packages/artemis-client/ ./packages/artemis-client/
+COPY packages/phonepilot-client/ ./packages/phonepilot-client/
 COPY config/ ./config/
 COPY pyproject.toml setup.py README.md LICENSE ./
 COPY --from=frontend-builder /build/apps/showcase_ui/dist/ ./apps/showcase_ui/dist/
 
 # Build wheels for the runtime image.
-RUN python -m pip wheel --no-cache-dir --no-deps --wheel-dir /wheels ./packages/artemis-client \
+RUN python -m pip wheel --no-cache-dir --no-deps --wheel-dir /wheels ./packages/phonepilot-client \
     && python -m pip wheel --no-cache-dir --no-deps --wheel-dir /wheels .
 
 
@@ -51,12 +51,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=wheel-builder /wheels/ /wheels/
-RUN pip install --no-cache-dir /wheels/artemis_client-*.whl \
-    && pip install --no-cache-dir /wheels/artemis-*.whl \
+RUN pip install --no-cache-dir /wheels/phonepilot_client-*.whl \
+    && pip install --no-cache-dir /wheels/phonepilot-*.whl \
     && rm -rf /wheels
 
 ENV PYTHONUNBUFFERED=1
-ENV ARTEMIS_APP_DIR=/app
+ENV PHONEPILOT_APP_DIR=/app
 ENV PORT=8080
 
 EXPOSE 8080

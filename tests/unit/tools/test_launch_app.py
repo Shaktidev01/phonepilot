@@ -13,15 +13,15 @@
 # limitations under the License.
 
 from unittest.mock import MagicMock, patch
-from artemis.context import ArtemisContext
-from artemis.tools.mobile.launch_app import find_package
+from phonepilot.context import PhonePilotContext
+from phonepilot.tools.mobile.launch_app import find_package
 from third_party.mobile_use.agents.hopper.hopper import HopperOutput
 import pytest
 
 
 @pytest.fixture
 def mock_context():
-    ctx = MagicMock(spec=ArtemisContext)
+    ctx = MagicMock(spec=PhonePilotContext)
     ctx.package_cache = {}
     return ctx
 

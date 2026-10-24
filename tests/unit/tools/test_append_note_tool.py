@@ -15,10 +15,10 @@
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-from artemis.context import ArtemisContext
-from artemis.graph.state import State
-from artemis.tools.base import ArtemisTool
-from artemis.tools.scratchpad import (
+from phonepilot.context import PhonePilotContext
+from phonepilot.graph.state import State
+from phonepilot.tools.base import PhonePilotTool
+from phonepilot.tools.scratchpad import (
     AppendNote,
     AppendNoteArgs,
     AppendNoteTool,
@@ -33,17 +33,17 @@ import pytest
 
 @pytest.fixture
 def mock_ctx(tmp_path):
-    ctx = MagicMock(spec=ArtemisContext)
+    ctx = MagicMock(spec=PhonePilotContext)
     ctx.data_engine = MagicMock()
     ctx.data_engine.base_dir = str(tmp_path)
     return ctx
 
 
 def test_append_note_tool_subclass():
-    """Verify AppendNoteTool is a subclass of ArtemisTool."""
-    assert issubclass(AppendNoteTool, ArtemisTool)
-    assert issubclass(AppendNote, ArtemisTool)
-    assert isinstance(append_note, ArtemisTool)
+    """Verify AppendNoteTool is a subclass of PhonePilotTool."""
+    assert issubclass(AppendNoteTool, PhonePilotTool)
+    assert issubclass(AppendNote, PhonePilotTool)
+    assert isinstance(append_note, PhonePilotTool)
     assert isinstance(append_note, AppendNoteTool)
 
     assert append_note.name == "append_note"
@@ -128,7 +128,7 @@ async def test_append_note_with_state_tool_message(mock_ctx, tmp_path):
 async def test_append_note_execution_failure(mock_ctx):
     """Verify error handling when appending note fails."""
     with patch(
-        "artemis.tools.scratchpad.append_note_content",
+        "phonepilot.tools.scratchpad.append_note_content",
         side_effect=PermissionError("Permission denied"),
     ):
         result = await append_note.execute(

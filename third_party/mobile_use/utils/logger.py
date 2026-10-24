@@ -26,7 +26,7 @@ import threading
 
 from colorama import Fore, Style, init
 
-from artemis.data_engine.context_vars import CURRENT_TRACE_ID
+from phonepilot.data_engine.context_vars import CURRENT_TRACE_ID
 
 init(autoreset=True)
 
@@ -52,7 +52,7 @@ class DataEngineHandler(logging.Handler):
             item = self._log_queue.get()
             if item is None:
                 break
-            engine_mod = sys.modules.get("artemis.data_engine.engine")
+            engine_mod = sys.modules.get("phonepilot.data_engine.engine")
             if engine_mod and getattr(engine_mod, "_CURRENT_DATA_ENGINE", None):
                 _CURRENT_DATA_ENGINE = engine_mod._CURRENT_DATA_ENGINE
                 if _CURRENT_DATA_ENGINE and _CURRENT_DATA_ENGINE.current_session_id:
@@ -71,7 +71,7 @@ class DataEngineHandler(logging.Handler):
             self._log_queue.task_done()
 
     def emit(self, record):
-        engine_mod = sys.modules.get("artemis.data_engine.engine")
+        engine_mod = sys.modules.get("phonepilot.data_engine.engine")
         if not engine_mod or not getattr(engine_mod, "_CURRENT_DATA_ENGINE", None):
             return
         _CURRENT_DATA_ENGINE = engine_mod._CURRENT_DATA_ENGINE
@@ -103,13 +103,13 @@ class DataEngineHandler(logging.Handler):
                 ) from e
 
 
-class ArtemisLogger:
+class PhonePilotLogger:
     def __init__(
         self,
         name: str,
         console_level: str = "INFO",
     ):
-        """Initialize the ARTEMIS logger.
+        """Initialize the PhonePilot logger.
 
         Args:
             name: Logger name (usually __name__)
@@ -131,8 +131,8 @@ class ArtemisLogger:
         data_engine_handler.setFormatter(formatter)
         self.logger.addHandler(data_engine_handler)
 
-        if os.environ.get("ARTEMIS_MCP_SERVER") == "true":
-            traces_dir = os.environ.get("ARTEMIS_TRACES_PATH", "traces")
+        if os.environ.get("PHONEPILOT_MCP_SERVER") == "true":
+            traces_dir = os.environ.get("PHONEPILOT_TRACES_PATH", "traces")
             log_path = Path(traces_dir) / "mcp_server.log"
             log_path.parent.mkdir(parents=True, exist_ok=True)
             file_handler = logging.FileHandler(log_path, encoding="utf-8")
@@ -194,7 +194,7 @@ _loggers = {}
 def get_logger(
     name: str,
     console_level: str = "INFO",
-) -> ArtemisLogger:
+) -> PhonePilotLogger:
     """Get or create a logger instance.
 
     Args:
@@ -205,10 +205,10 @@ def get_logger(
         enable_file_logging: Whether to enable file logging
 
     Returns:
-        ArtemisLogger instance
+        PhonePilotLogger instance
     """
     if name not in _loggers:
-        _loggers[name] = ArtemisLogger(
+        _loggers[name] = PhonePilotLogger(
             name=name,
             console_level=console_level,
         )

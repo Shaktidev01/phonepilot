@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tests for argv handling in ``python -m artemis.main``.
+"""Tests for argv handling in ``python -m phonepilot.main``.
 
 Only a free-text goal is rewritten into ``run <goal>``; registered commands
 and root options are passed through unchanged.
@@ -21,8 +21,8 @@ and root options are passed through unchanged.
 import pytest
 import typer
 
-from artemis import main as legacy_main
-from artemis.interfaces.cli.main import app
+from phonepilot import main as legacy_main
+from phonepilot.interfaces.cli.main import app
 
 
 @pytest.mark.parametrize(
@@ -47,16 +47,16 @@ from artemis.interfaces.cli.main import app
     ],
 )
 def test_known_commands_and_flags_are_not_rewritten(token):
-    argv = ["artemis", token, "extra"]
+    argv = ["phonepilot", token, "extra"]
     assert legacy_main.normalize_argv(argv) == argv
 
 
 @pytest.mark.parametrize(
     "argv",
     [
-        ["artemis", "Open Settings and enable dark mode"],
-        ["artemis", "status of my battery"],
-        ["artemis", "--device", "emulator-5554", "open settings"],
+        ["phonepilot", "Open Settings and enable dark mode"],
+        ["phonepilot", "status of my battery"],
+        ["phonepilot", "--device", "emulator-5554", "open settings"],
     ],
 )
 def test_free_text_goal_is_rewritten_to_run(argv):
@@ -64,7 +64,7 @@ def test_free_text_goal_is_rewritten_to_run(argv):
 
 
 def test_no_args_is_left_alone():
-    assert legacy_main.normalize_argv(["artemis"]) == ["artemis"]
+    assert legacy_main.normalize_argv(["phonepilot"]) == ["phonepilot"]
 
 
 def test_every_registered_command_is_known():
@@ -81,10 +81,10 @@ def test_cli_status_dispatches_status_not_run(monkeypatch):
         calls.append(list(legacy_main.sys.argv))
 
     monkeypatch.setattr(legacy_main, "app", fake_app)
-    monkeypatch.setattr(legacy_main.sys, "argv", ["artemis", "status"])
+    monkeypatch.setattr(legacy_main.sys, "argv", ["phonepilot", "status"])
     legacy_main.cli()
-    assert calls == [["artemis", "status"]]
+    assert calls == [["phonepilot", "status"]]
 
-    monkeypatch.setattr(legacy_main.sys, "argv", ["artemis", "open settings"])
+    monkeypatch.setattr(legacy_main.sys, "argv", ["phonepilot", "open settings"])
     legacy_main.cli()
-    assert calls[-1] == ["artemis", "run", "open settings"]
+    assert calls[-1] == ["phonepilot", "run", "open settings"]

@@ -14,8 +14,8 @@
 
 """The Pro tuning summary the SDK persists with every session's device_info."""
 
-from artemis.sdk.agent import run_tuning_summary
-from artemis.sdk.builders.agent_config_builder import AgentConfigBuilder
+from phonepilot.sdk.agent import run_tuning_summary
+from phonepilot.sdk.builders.agent_config_builder import AgentConfigBuilder
 
 
 def test_flash_runs_persist_no_tuning():

@@ -14,8 +14,8 @@ import sys
 import pytest
 from rich.console import Console
 
-from artemis.interfaces.cli.commands import ui
-from artemis.interfaces.cli.commands.ui import (
+from phonepilot.interfaces.cli.commands import ui
+from phonepilot.interfaces.cli.commands.ui import (
     _npm_install_required,
     _resolve_npm_executable,
     _run_build_step,

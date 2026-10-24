@@ -24,7 +24,7 @@ echo "Generating self-signed SSL certificates for development..."
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
     -keyout "${KEY_FILE}" \
     -out "${CERT_FILE}" \
-    -subj "/CN=localhost/O=Artemis Development/C=US" \
+    -subj "/CN=localhost/O=PhonePilot Development/C=US" \
     -addext "subjectAltName=DNS:localhost,DNS:*.localhost,IP:127.0.0.1"
 
 chmod 600 "${KEY_FILE}"

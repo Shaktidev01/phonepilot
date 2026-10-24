@@ -18,8 +18,8 @@ import json
 from typing import Any
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
-from artemis.core.diagnostics import readiness_engine
-from artemis.runtime import DeviceExecutionLock, device_pool
+from phonepilot.core.diagnostics import readiness_engine
+from phonepilot.runtime import DeviceExecutionLock, device_pool
 
 try:
     from admin_console.core.state import state
@@ -185,10 +185,10 @@ async def run_task(request: RunRequest):
 async def get_run_defaults():
     """Effective Pro-profile tuning defaults from the agent config.
 
-    The launcher's sliders start here so they reflect ``artemis.jsonc`` (and the
-    ``ARTEMIS_EXPLORER_VERSION`` override) instead of a hard-coded guess.
+    The launcher's sliders start here so they reflect ``phonepilot.jsonc`` (and the
+    ``PHONEPILOT_EXPLORER_VERSION`` override) instead of a hard-coded guess.
     """
-    from artemis.config import load_agent_config, verification_level_for_checker
+    from phonepilot.config import load_agent_config, verification_level_for_checker
 
     agent_cfg = load_agent_config()
     return {

@@ -18,7 +18,7 @@
 
 """Resolve a natural-language app name to an installed package via the Hopper agent."""
 
-from artemis.context import ArtemisContext
+from phonepilot.context import PhonePilotContext
 from third_party.mobile_use.agents.hopper.hopper import HopperOutput, hopper
 from third_party.mobile_use.controllers.platform_specific_commands_controller import (
     list_packages_async,
@@ -33,7 +33,7 @@ LAUNCH_APP_DOCSTRING = (
 )
 
 
-async def find_package(ctx: ArtemisContext, app_name: str, use_fallback: bool = True) -> str | None:
+async def find_package(ctx: PhonePilotContext, app_name: str, use_fallback: bool = True) -> str | None:
     """Finds the package name for a given application name.
 
     Returns None if package not found or on error.

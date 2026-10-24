@@ -19,14 +19,14 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     # Application & Server Settings
-    APP_NAME: str = "Artemis Backend Manager"
+    APP_NAME: str = "PhonePilot Backend Manager"
     APP_ENV: str = "development"
     HOST: str = "0.0.0.0"
     PORT: int = 8000
     DEBUG: bool = True
 
     # Security & JWT Token Config
-    JWT_SECRET_KEY: str = "artemis-cos-production-super-secret-key-change-in-prod"
+    JWT_SECRET_KEY: str = "phonepilot-cos-production-super-secret-key-change-in-prod"
     JWT_ALGORITHM: str = "HS256"
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24  # 24 hours
 
@@ -36,11 +36,11 @@ class Settings(BaseSettings):
 
     # Docker Socket & Ephemeral Container Settings
     DOCKER_SOCKET_PATH: str = "unix://var/run/docker.sock"
-    ARTEMIS_IMAGE: str = "artemis:latest"
-    DOCKER_NETWORK: str = "artemis-net"
-    ARTEMIS_CONTAINER_PREFIX: str = "artemis-session"
-    ARTEMIS_CPU_LIMIT: float = 2.0
-    ARTEMIS_MEMORY_LIMIT: str = "2g"
+    PHONEPILOT_IMAGE: str = "phonepilot:latest"
+    DOCKER_NETWORK: str = "phonepilot-net"
+    PHONEPILOT_CONTAINER_PREFIX: str = "phonepilot-session"
+    PHONEPILOT_CPU_LIMIT: float = 2.0
+    PHONEPILOT_MEMORY_LIMIT: str = "2g"
 
     # Cloud Orchestrator & Cuttlefish Host Settings
     CLOUD_ORCHESTRATOR_URL: str = os.getenv(
@@ -51,8 +51,8 @@ class Settings(BaseSettings):
     CUTTLEFISH_START_WEBRTC_PORT: int = 8443
 
     # Google Cloud BigQuery Settings
-    GCP_PROJECT_ID: str = os.getenv("GOOGLE_CLOUD_PROJECT", "artemis-cloud-project")
-    BQ_DATASET: str = "artemis_orchestration"
+    GCP_PROJECT_ID: str = os.getenv("GOOGLE_CLOUD_PROJECT", "phonepilot-cloud-project")
+    BQ_DATASET: str = "phonepilot_orchestration"
     BQ_TABLE: str = "sessions_registry"
     USE_LOCAL_FALLBACK_DB: bool = True  # In-memory fallback if BigQuery credentials are unset
 

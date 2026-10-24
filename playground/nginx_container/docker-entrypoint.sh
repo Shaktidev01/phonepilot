@@ -19,7 +19,7 @@ CERT_DIR="/etc/nginx/certs"
 CERT_FILE="${CERT_DIR}/tls.crt"
 KEY_FILE="${CERT_DIR}/tls.key"
 
-echo "[Nginx Entrypoint] Initializing Artemis Ingress Proxy..."
+echo "[Nginx Entrypoint] Initializing PhonePilot Ingress Proxy..."
 
 # Check if SSL certificates exist; if not, auto-generate a self-signed fallback cert
 if [ ! -f "$CERT_FILE" ] || [ ! -f "$KEY_FILE" ]; then
@@ -28,7 +28,7 @@ if [ ! -f "$CERT_FILE" ] || [ ! -f "$KEY_FILE" ]; then
     openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
         -keyout "${KEY_FILE}" \
         -out "${CERT_FILE}" \
-        -subj "/CN=localhost/O=Artemis/C=US" \
+        -subj "/CN=localhost/O=PhonePilot/C=US" \
         -addext "subjectAltName=DNS:localhost,DNS:*.localhost,IP:127.0.0.1" \
         2>/dev/null
     chmod 600 "${KEY_FILE}"

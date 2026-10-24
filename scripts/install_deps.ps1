@@ -14,7 +14,7 @@
 
 <#
 .SYNOPSIS
-    Artemis Smart Multi-Platform Dependency Installer for Windows (PowerShell).
+    PhonePilot Smart Multi-Platform Dependency Installer for Windows (PowerShell).
 #>
 
 [CmdletBinding()]
@@ -32,7 +32,7 @@ try {
 } catch {}
 
 Write-Host "======================================================" -ForegroundColor Cyan
-Write-Host "   Artemis - Windows Smart Installer                  " -ForegroundColor Cyan
+Write-Host "   PhonePilot - Windows Smart Installer                  " -ForegroundColor Cyan
 Write-Host "======================================================" -ForegroundColor Cyan
 Write-Host ""
 
@@ -505,16 +505,16 @@ foreach ($t in $tools) {
 
 Write-Host ""
 Write-Host "======================================================" -ForegroundColor Cyan
-Write-Host "   Artemis Environment Ready!                         " -ForegroundColor Green
+Write-Host "   PhonePilot Environment Ready!                         " -ForegroundColor Green
 Write-Host "======================================================" -ForegroundColor Cyan
 
 if ($Launch -or $Open) {
     Start-LocalAdbServer
     Write-Host "[INFO] Launching Showcase UI..." -ForegroundColor Green
-    uv run python -m artemis ui --open
+    uv run python -m phonepilot ui --open
 } else {
     Write-Host "To start the Showcase UI and interactive onboarding:" -ForegroundColor White
-    Write-Host "  -> .\start.bat   (or: uv run python -m artemis ui)" -ForegroundColor Cyan
+    Write-Host "  -> .\start.bat   (or: uv run python -m phonepilot ui)" -ForegroundColor Cyan
     Write-Host ""
 }
 

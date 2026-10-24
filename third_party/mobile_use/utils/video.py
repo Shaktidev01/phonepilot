@@ -29,7 +29,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict
 
-from artemis.utils.video import (
+from phonepilot.utils.video import (
     get_ffmpeg_path,
     get_ffprobe_path,
     is_ffmpeg_drawtext_supported,
@@ -164,7 +164,7 @@ class FFmpegNotInstalledError(Exception):
         message = (
             "\n\n❌ ffmpeg is required for video recording but is not"
             " installed.\n\nPlease install ffmpeg first:\n  →"
-            f" {install_instructions}\n\nAfter installation, restart Artemis.\n"
+            f" {install_instructions}\n\nAfter installation, restart PhonePilot.\n"
         )
         super().__init__(message)
 

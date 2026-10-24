@@ -18,7 +18,7 @@
 
 """Base SDK agent: device/client setup, task creation and the task run loop.
 
-Artemis extends this class in ``artemis.sdk.agent.Agent`` with tracing setup, device
+PhonePilot extends this class in ``phonepilot.sdk.agent.Agent`` with tracing setup, device
 environment preparation, cancellation watching and UI hierarchy backend reporting.
 """
 
@@ -44,31 +44,31 @@ from adbutils import AdbClient
 from PIL import Image
 from pydantic import BaseModel
 
-from artemis.agents.flash.runner import FlashRunner
-from artemis.agents.outputter.outputter import outputter
-from artemis.clients.screen_client_factory import (
+from phonepilot.agents.flash.runner import FlashRunner
+from phonepilot.agents.outputter.outputter import outputter
+from phonepilot.clients.screen_client_factory import (
     ScreenClient,
     create_screen_client,
 )
-from artemis.config import (
+from phonepilot.config import (
     OutputConfig,
     record_events,
 )
-from artemis.constants import RECURSION_LIMIT
-from artemis.context import (
-    ArtemisContext,
+from phonepilot.constants import RECURSION_LIMIT
+from phonepilot.context import (
+    PhonePilotContext,
     DeviceContext,
     DevicePlatform,
     ExecutionSetup,
 )
-from artemis.controllers.controller_factory import get_controller
-from artemis.data_engine.trace import DataEngineCallbackHandler
-from artemis.graph.graph import get_graph
-from artemis.graph.state import State
-from artemis.runtime import DeviceExecutionLock
-from artemis.sdk.run_outcome import attach_test_summary, resolve_trace_suffix
-from artemis.sdk.types.agent import AgentConfig
-from artemis.utils.startup_progress import publish_startup_progress
+from phonepilot.controllers.controller_factory import get_controller
+from phonepilot.data_engine.trace import DataEngineCallbackHandler
+from phonepilot.graph.graph import get_graph
+from phonepilot.graph.state import State
+from phonepilot.runtime import DeviceExecutionLock
+from phonepilot.sdk.run_outcome import attach_test_summary, resolve_trace_suffix
+from phonepilot.sdk.types.agent import AgentConfig
+from phonepilot.utils.startup_progress import publish_startup_progress
 from third_party.mobile_use.controllers.platform_specific_commands_controller import (
     get_first_device,
 )
@@ -139,7 +139,7 @@ class AgentBase:
         retry_wait_seconds: int = 5,
     ):
 
-        if os.environ.get("ARTEMIS_CLOUD_MODE") != "1" and not which("adb"):
+        if os.environ.get("PHONEPILOT_CLOUD_MODE") != "1" and not which("adb"):
             raise ExecutableNotFoundError("adb")
 
         if self._initialized:
@@ -147,7 +147,7 @@ class AgentBase:
             return True
 
         # Get first available device ID
-        if os.environ.get("ARTEMIS_CLOUD_MODE") == "1":
+        if os.environ.get("PHONEPILOT_CLOUD_MODE") == "1":
             device_id = os.environ.get("ADB_DEVICE_SERIAL", "cloud_device")
             platform = DevicePlatform.ANDROID
         elif not self._config.device_id or not self._config.device_platform:
@@ -167,7 +167,7 @@ class AgentBase:
         publish_startup_progress(
             "device_check", "Checking the Android device", session_id=self._session_id
         )
-        if os.environ.get("ARTEMIS_CLOUD_MODE") != "1":
+        if os.environ.get("PHONEPILOT_CLOUD_MODE") != "1":
             self._init_clients(
                 device_id=device_id,
                 platform=platform,
@@ -194,7 +194,7 @@ class AgentBase:
         # Asynchronously pre-warm LLM connection pools in the background
         asyncio.create_task(self._prewarm_llm_connections(api_key))
 
-        logger.info("✅ Artemis agent initialized.")
+        logger.info("✅ PhonePilot agent initialized.")
         self._initialized = True
 
         return True
@@ -417,8 +417,8 @@ class AgentBase:
         on_status_changed = None
         task_id = str(
             self._session_id
-            or os.getenv("ARTEMIS_SESSION_ID")
-            or os.getenv("ARTEMIS_CLOUD_SESSION_ID")
+            or os.getenv("PHONEPILOT_SESSION_ID")
+            or os.getenv("PHONEPILOT_CLOUD_SESSION_ID")
             or uuid.uuid4()
         )
 
@@ -433,7 +433,7 @@ class AgentBase:
         self._tasks.append(task)
         task_name = task.get_name()
 
-        context = ArtemisContext(
+        context = PhonePilotContext(
             device=self._device_context,
             adb_client=self._adb_client,
             ui_adb_client=self._ui_adb_client,
@@ -462,8 +462,8 @@ class AgentBase:
             effective_max = getattr(self._config, "max_concurrency", None)
             sess_id = (
                 self._session_id
-                or os.getenv("ARTEMIS_SESSION_ID")
-                or os.getenv("ARTEMIS_CLOUD_SESSION_ID")
+                or os.getenv("PHONEPILOT_SESSION_ID")
+                or os.getenv("PHONEPILOT_CLOUD_SESSION_ID")
                 or getattr(task, "id", None)
                 or getattr(getattr(task, "request", None), "task_name", None)
             )
@@ -485,11 +485,11 @@ class AgentBase:
                     concurrency_mode=effective_mode,
                     max_concurrency=effective_max,
                     session_id=str(sess_id) if sess_id else None,
-                    ingress=os.getenv("ARTEMIS_TASK_INGRESS") or "agent",
+                    ingress=os.getenv("PHONEPILOT_TASK_INGRESS") or "agent",
                 )
             )
             try:
-                if device_lock is not None and os.environ.get("ARTEMIS_CLOUD_MODE") != "1":
+                if device_lock is not None and os.environ.get("PHONEPILOT_CLOUD_MODE") != "1":
                     queue_cancel_event = threading.Event()
                     acquire_task = asyncio.create_task(
                         asyncio.to_thread(
@@ -518,7 +518,7 @@ class AgentBase:
                 # finishing.
                 self._prepare_tracing(task=task, context=context)
                 self._prepare_output_files(task=task)
-                if os.environ.get("ARTEMIS_CLOUD_MODE") != "1":
+                if os.environ.get("PHONEPILOT_CLOUD_MODE") != "1":
                     if self._ui_adb_client is not None:
                         await self._connect_screen_client(context, str(sess_id))
                     await self._ensure_device_unlocked()
@@ -752,7 +752,7 @@ class AgentBase:
                 try:
                     # Background ADB processes (logcat, screenrecord, ...) started
                     # by the Operator must not outlive the automation task.
-                    from artemis.tools.command_tool import shutdown_adb_background_tasks
+                    from phonepilot.tools.command_tool import shutdown_adb_background_tasks
 
                     await asyncio.wait_for(shutdown_adb_background_tasks(context), timeout=15.0)
                 except Exception as e:
@@ -760,7 +760,7 @@ class AgentBase:
                 try:
                     await self._finalize_tracing_safely(task=task, context=context)
                 finally:
-                    if os.environ.get("ARTEMIS_CLOUD_MODE") != "1":
+                    if os.environ.get("PHONEPILOT_CLOUD_MODE") != "1":
                         try:
                             if self._ui_adb_client is not None:
                                 await asyncio.to_thread(self._ui_adb_client.disconnect)
@@ -848,7 +848,7 @@ class AgentBase:
 
         return None
 
-    async def _prepare_app_lock(self, task: Task, context: ArtemisContext):
+    async def _prepare_app_lock(self, task: Task, context: PhonePilotContext):
         """Prepare app lock by launching the locked app if specified."""
         if not task.request.locked_app_package:
             return
@@ -882,7 +882,7 @@ class AgentBase:
             traces_output_path.mkdir(parents=True, exist_ok=True)
         return task_name
 
-    async def _finalize_tracing(self, task: Task, context: ArtemisContext):
+    async def _finalize_tracing(self, task: Task, context: PhonePilotContext):
         if context.data_engine:
             session_status = "completed"
             if task.status == "failed":
@@ -939,7 +939,7 @@ class AgentBase:
     async def _extract_output(
         self,
         task_name: str,
-        ctx: ArtemisContext,
+        ctx: PhonePilotContext,
         request: TaskRequest[TOutput],
         output_config: OutputConfig | None,
         state: State,
@@ -1005,7 +1005,7 @@ class AgentBase:
     ) -> DeviceContext:
 
         host_platform = system()
-        if os.environ.get("ARTEMIS_CLOUD_MODE") == "1":
+        if os.environ.get("PHONEPILOT_CLOUD_MODE") == "1":
             width, height = (1080, 2400)
             if self._adb_client:
                 try:
@@ -1038,7 +1038,7 @@ class AgentBase:
             logger.warning("ADB client not available, using default dimensions")
             device_width, device_height = 1080, 2340
 
-        from artemis.platform import platform as pal_platform
+        from phonepilot.platform import platform as pal_platform
 
         return DeviceContext(
             host_platform=pal_platform.os_type.name,

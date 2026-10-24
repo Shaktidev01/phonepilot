@@ -23,27 +23,27 @@ from collections.abc import Callable
 from langchain_core.tools import BaseTool
 from pydantic import BaseModel
 
-from artemis.context import ArtemisContext
-from artemis.utils.cython_compat import CyFunctionDetector
+from phonepilot.context import PhonePilotContext
+from phonepilot.utils.cython_compat import CyFunctionDetector
 
 
 class ToolWrapper(BaseModel):
     """Wrapper holding a tool factory and lifecycle callbacks."""
 
     model_config = {"ignored_types": (CyFunctionDetector,)}
-    tool_fn_getter: Callable[[ArtemisContext], BaseTool]
+    tool_fn_getter: Callable[[PhonePilotContext], BaseTool]
     on_success_fn: Callable[..., str]
     on_failure_fn: Callable[..., str]
-    is_available_fn: Callable[[ArtemisContext], bool] | None = None
+    is_available_fn: Callable[[PhonePilotContext], bool] | None = None
 
 
 class CompositeToolWrapper(ToolWrapper):
     """Wrapper holding a composite tool factory and lifecycle callbacks."""
 
-    composite_tools_fn_getter: Callable[[ArtemisContext], list[BaseTool]]
+    composite_tools_fn_getter: Callable[[PhonePilotContext], list[BaseTool]]
 
 
-def make_save_note_wrapper(tool_fn_getter: Callable[[ArtemisContext], BaseTool]) -> ToolWrapper:
+def make_save_note_wrapper(tool_fn_getter: Callable[[PhonePilotContext], BaseTool]) -> ToolWrapper:
     """Wrapper for the scratchpad ``save_note`` tool with its outcome messages."""
     return ToolWrapper(
         tool_fn_getter=tool_fn_getter,

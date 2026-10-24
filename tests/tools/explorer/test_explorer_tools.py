@@ -12,13 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from artemis.agents.explorer.explorer import Explorer
+from phonepilot.agents.explorer.explorer import Explorer
 import pytest
 
 
 @pytest.fixture
-def explorer_instance(artemis_context, mock_state):
-    explorer = Explorer(artemis_context)
+def explorer_instance(phonepilot_context, mock_state):
+    explorer = Explorer(phonepilot_context)
     explorer.image_name = "test_img"
     explorer.screenshot_path = mock_state.latest_screenshot
 

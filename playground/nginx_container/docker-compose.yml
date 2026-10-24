@@ -19,7 +19,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: artemis-nginx-proxy
+    container_name: phonepilot-nginx-proxy
     restart: unless-stopped
     ports:
       - "80:80"
@@ -28,7 +28,7 @@ services:
       # Mount certificates from host (or let entrypoint generate dev certs)
       - ./certs:/etc/nginx/certs:ro
     networks:
-      - artemis-net
+      - phonepilot-net
     extra_hosts:
       # Allows reaching Cuttlefish / Cloud Orchestrator running on the COS host
       - "host.docker.internal:host-gateway"
@@ -39,6 +39,6 @@ services:
       retries: 3
 
 networks:
-  artemis-net:
-    name: artemis-net
+  phonepilot-net:
+    name: phonepilot-net
     driver: bridge

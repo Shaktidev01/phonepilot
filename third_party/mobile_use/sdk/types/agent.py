@@ -18,7 +18,7 @@
 
 """Agent configuration base models.
 
-Artemis extends :class:`AgentConfigBase` as ``artemis.sdk.types.agent.AgentConfig``.
+PhonePilot extends :class:`AgentConfigBase` as ``phonepilot.sdk.types.agent.AgentConfig``.
 """
 
 from typing import Literal
@@ -27,7 +27,7 @@ from urllib.parse import urlparse
 from langchain_core.callbacks.base import Callbacks
 from pydantic import BaseModel
 
-from artemis.utils.cython_compat import CyFunctionDetector
+from phonepilot.utils.cython_compat import CyFunctionDetector
 from third_party.mobile_use.context import DevicePlatform
 from third_party.mobile_use.sdk.types.task import AgentProfile, TaskRequestCommon
 
@@ -76,7 +76,7 @@ class ServerConfig(BaseModel):
 
 
 class AgentConfigBase(BaseModel):
-    """ARTEMIS agent configuration.
+    """PhonePilot agent configuration.
 
     Attributes:
         agent_profiles: Map an agent profile name to its configuration.

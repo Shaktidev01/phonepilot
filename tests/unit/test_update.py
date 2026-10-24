@@ -13,9 +13,9 @@
 # limitations under the License.
 
 import os
-from artemis.utils.notes import update_note_content
+from phonepilot.utils.notes import update_note_content
 
-base_dir = "/tmp/artemis_test"
+base_dir = "/tmp/phonepilot_test"
 os.makedirs(f"{base_dir}/notes", exist_ok=True)
 task_plan = """- [x] Initial task
 - [/] Active task

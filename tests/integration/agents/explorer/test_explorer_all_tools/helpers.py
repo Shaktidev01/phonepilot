@@ -17,13 +17,13 @@
 from pathlib import Path
 from PIL import Image
 from unittest.mock import MagicMock
-from artemis.context import ArtemisContext
-from artemis.graph.state import State
+from phonepilot.context import PhonePilotContext
+from phonepilot.graph.state import State
 
 
 def create_mock_context() -> MagicMock:
-    """Creates a mock ArtemisContext suitable for Explorer tests."""
-    ctx = MagicMock(spec=ArtemisContext)
+    """Creates a mock PhonePilotContext suitable for Explorer tests."""
+    ctx = MagicMock(spec=PhonePilotContext)
     ctx.device = MagicMock()
     ctx.device.device_width = 1080
     ctx.device.device_height = 2400

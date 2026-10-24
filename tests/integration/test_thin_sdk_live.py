@@ -9,7 +9,7 @@
 """Opt-in live contract test for the remote-only Python SDK.
 
 Run with:
-    ARTEMIS_TEST_DEVICE_SERIAL=<serial> pytest tests/integration/test_thin_sdk_live.py
+    PHONEPILOT_TEST_DEVICE_SERIAL=<serial> pytest tests/integration/test_thin_sdk_live.py
 """
 
 from __future__ import annotations
@@ -23,16 +23,16 @@ import uuid
 
 import pytest
 
-from artemis_client import ArtemisClient, TaskRejectedError
+from phonepilot_client import PhonePilotClient, TaskRejectedError
 
 
-def _live_client() -> tuple[ArtemisClient, str]:
-    serial = os.environ.get("ARTEMIS_TEST_DEVICE_SERIAL")
+def _live_client() -> tuple[PhonePilotClient, str]:
+    serial = os.environ.get("PHONEPILOT_TEST_DEVICE_SERIAL")
     if not serial:
-        pytest.skip("ARTEMIS_TEST_DEVICE_SERIAL is required for the live SDK test")
+        pytest.skip("PHONEPILOT_TEST_DEVICE_SERIAL is required for the live SDK test")
     return (
-        ArtemisClient(
-            os.environ.get("ARTEMIS_BASE_URL", "http://127.0.0.1:8000"),
+        PhonePilotClient(
+            os.environ.get("PHONEPILOT_BASE_URL", "http://127.0.0.1:8000"),
             device_serial=serial,
             default_profile="flash",
             poll_interval=0.5,
@@ -113,7 +113,7 @@ async def test_thin_sdk_remote_contract_on_real_device():
             break
         await asyncio.sleep(0.5)
     else:
-        pytest.fail("Artemis scheduler did not release the device after task completion")
+        pytest.fail("PhonePilot scheduler did not release the device after task completion")
 
 
 @pytest.mark.android
@@ -124,7 +124,7 @@ async def test_thin_sdk_rejects_unknown_real_device_serial():
     with pytest.raises(TaskRejectedError):
         await client.submit(
             "This task must never reach a device",
-            device_serial="artemis-nonexistent-device",
+            device_serial="phonepilot-nonexistent-device",
         )
 
 

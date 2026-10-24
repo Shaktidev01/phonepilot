@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tests for the imports between ``artemis`` and ``third_party/mobile_use``.
+"""Tests for the imports between ``phonepilot`` and ``third_party/mobile_use``.
 
 The two packages import each other. Every name imported across them, in either
 direction, must exist and be public, so renaming or removing it on one side
@@ -27,7 +27,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 THIRD_PARTY_DIRS = [ROOT / "third_party"]
-ARTEMIS_DIRS = [ROOT / "artemis", ROOT / "apps" / "admin_console", ROOT / "mcp_server"]
+PHONEPILOT_DIRS = [ROOT / "phonepilot", ROOT / "apps" / "admin_console", ROOT / "mcp_server"]
 
 
 def _py_files(dirs: list[Path]):
@@ -54,10 +54,10 @@ def _cross_imports(dirs: list[Path], target_prefix: str) -> list[tuple[str, str,
     return found
 
 
-# Imports of artemis from third_party.
-THIRD_PARTY_TO_ARTEMIS = _cross_imports(THIRD_PARTY_DIRS, "artemis")
-# Imports of third_party from artemis.
-ARTEMIS_TO_THIRD_PARTY = _cross_imports(ARTEMIS_DIRS, "third_party")
+# Imports of phonepilot from third_party.
+THIRD_PARTY_TO_PhonePilot = _cross_imports(THIRD_PARTY_DIRS, "phonepilot")
+# Imports of third_party from phonepilot.
+PHONEPILOT_TO_THIRD_PARTY = _cross_imports(PHONEPILOT_DIRS, "third_party")
 
 
 def _is_private(dotted: str) -> bool:
@@ -66,19 +66,19 @@ def _is_private(dotted: str) -> bool:
 
 def test_boundary_scan_found_imports():
     # Fails if the scan finds nothing, e.g. after a directory move.
-    assert THIRD_PARTY_TO_ARTEMIS
-    assert ARTEMIS_TO_THIRD_PARTY
+    assert THIRD_PARTY_TO_PhonePilot
+    assert PHONEPILOT_TO_THIRD_PARTY
 
 
 @pytest.mark.parametrize(
     ("loc", "module", "name"),
-    THIRD_PARTY_TO_ARTEMIS + ARTEMIS_TO_THIRD_PARTY,
+    THIRD_PARTY_TO_PhonePilot + PHONEPILOT_TO_THIRD_PARTY,
     ids=lambda v: v if isinstance(v, str) else "",
 )
 def test_cross_boundary_import_resolves_and_is_public(loc, module, name):
     full = module if name is None else f"{module}.{name}"
     assert not _is_private(full), (
-        f"{loc}: imports private '{full}' across the artemis/third_party boundary; "
+        f"{loc}: imports private '{full}' across the phonepilot/third_party boundary; "
         "make it public on the defining side."
     )
     mod = importlib.import_module(module)
@@ -105,7 +105,7 @@ def test_first_party_files_carry_no_third_party_header():
     # Code that needs an upstream copyright header belongs in third_party/.
     offenders = [
         str(path.relative_to(ROOT))
-        for path in _py_files(ARTEMIS_DIRS + [ROOT / "tests", ROOT / "scripts"])
+        for path in _py_files(PHONEPILOT_DIRS + [ROOT / "tests", ROOT / "scripts"])
         if any(marker in _leading_comment_block(path) for marker in _THIRD_PARTY_HEADER_MARKERS)
     ]
     assert not offenders, f"third-party attribution header outside third_party/: {offenders}"

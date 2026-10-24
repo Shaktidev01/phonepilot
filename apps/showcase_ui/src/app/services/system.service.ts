@@ -433,7 +433,7 @@ export class SystemService {
   }
 
   /**
-   * Fetch the process-wide ADB server endpoint used by Artemis.
+   * Fetch the process-wide ADB server endpoint used by PhonePilot.
    */
   public fetchAdbServerStatus(): Observable<AdbServerStatus> {
     return this.http.get<AdbServerStatus>('/api/system/adb/server').pipe(
@@ -478,7 +478,7 @@ export class SystemService {
   }
 
   /**
-   * Switch Artemis back to the standard local ADB server.
+   * Switch PhonePilot back to the standard local ADB server.
    */
   public useLocalAdbServer(persist: boolean = true): Observable<AdbServerConnectionResponse> {
     return this.http.post<AdbServerConnectionResponse>(
@@ -527,7 +527,7 @@ export class SystemService {
   public modelConfigEnv = signal<ModelConfigEnvResponse | null>(null);
 
   /**
-   * Fetch current model configuration (artemis.jsonc) and environment (.env) status
+   * Fetch current model configuration (phonepilot.jsonc) and environment (.env) status
    */
   public fetchModelConfigEnv(): Observable<ModelConfigEnvResponse> {
     return this.http.get<ModelConfigEnvResponse>('/api/system/model-config-env').pipe(

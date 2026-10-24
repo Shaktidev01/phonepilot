@@ -14,9 +14,9 @@
 
 from unittest.mock import MagicMock, patch
 
-from artemis.context import ArtemisContext
-from artemis.tools.base import ArtemisTool
-from artemis.tools.mobile.search_logs import (
+from phonepilot.context import PhonePilotContext
+from phonepilot.tools.base import PhonePilotTool
+from phonepilot.tools.mobile.search_logs import (
     SearchLogs,
     SearchLogsArgs,
     SearchLogsTool,
@@ -170,15 +170,15 @@ def test_search_and_merge_logs_invalid_regex():
 # ---------------------------------------------------------------------------
 @pytest.fixture
 def mock_ctx():
-    return MagicMock(spec=ArtemisContext)
+    return MagicMock(spec=PhonePilotContext)
 
 
 def test_search_logs_tool_subclass():
-    """Verify SearchLogsTool is a subclass of ArtemisTool."""
-    assert issubclass(SearchLogsTool, ArtemisTool)
-    assert issubclass(SearchLogs, ArtemisTool)
-    assert issubclass(SearchLogsToolAlias, ArtemisTool)
-    assert isinstance(search_logs, ArtemisTool)
+    """Verify SearchLogsTool is a subclass of PhonePilotTool."""
+    assert issubclass(SearchLogsTool, PhonePilotTool)
+    assert issubclass(SearchLogs, PhonePilotTool)
+    assert issubclass(SearchLogsToolAlias, PhonePilotTool)
+    assert isinstance(search_logs, PhonePilotTool)
     assert isinstance(search_logs, SearchLogsTool)
 
     assert search_logs.name == "search_logs"
@@ -201,7 +201,7 @@ async def test_search_logs_direct_execution(mock_ctx):
     """Verify direct execution of SearchLogsTool."""
     mock_log_output = "line 1: FATAL: crash occurred\nline 2: normal"
     with patch(
-        "artemis.tools.mobile.search_logs.fetch_and_filter_logs",
+        "phonepilot.tools.mobile.search_logs.fetch_and_filter_logs",
         return_value=mock_log_output,
     ) as mock_fetch:
         result = await search_logs.execute(
@@ -226,7 +226,7 @@ async def test_search_logs_direct_execution(mock_ctx):
 async def test_search_logs_default_args(mock_ctx):
     """Verify search_logs defaults lines to 10000 and context_lines to 0."""
     with patch(
-        "artemis.tools.mobile.search_logs.fetch_and_filter_logs",
+        "phonepilot.tools.mobile.search_logs.fetch_and_filter_logs",
         return_value="info line\nerror line",
     ) as mock_fetch:
         result = await search_logs.execute(
@@ -245,7 +245,7 @@ async def test_search_logs_default_args(mock_ctx):
 async def test_search_logs_exception_handling(mock_ctx):
     """Verify error handling when searching logs raises an exception."""
     with patch(
-        "artemis.tools.mobile.search_logs.fetch_and_filter_logs",
+        "phonepilot.tools.mobile.search_logs.fetch_and_filter_logs",
         side_effect=RuntimeError("Device unreachable"),
     ):
         result = await search_logs.execute(ctx=mock_ctx, keyword="test")
@@ -256,7 +256,7 @@ async def test_search_logs_exception_handling(mock_ctx):
 async def test_search_logs_callable_execution(mock_ctx):
     """Verify invoking search_logs directly as a callable."""
     with patch(
-        "artemis.tools.mobile.search_logs.fetch_and_filter_logs",
+        "phonepilot.tools.mobile.search_logs.fetch_and_filter_logs",
         return_value="NullPointerException in activity",
     ):
         result = await search_logs(ctx=mock_ctx, keyword="NullPointer", context_lines=0)
@@ -270,7 +270,7 @@ async def test_get_search_logs_tool_langchain_ainvoke(mock_ctx):
     assert tool.name == "search_logs"
 
     with patch(
-        "artemis.tools.mobile.search_logs.fetch_and_filter_logs",
+        "phonepilot.tools.mobile.search_logs.fetch_and_filter_logs",
         return_value="critical error detected",
     ) as mock_fetch:
         result = await tool.ainvoke({"keyword": "critical", "lines": 2000})

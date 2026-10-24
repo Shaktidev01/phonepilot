@@ -17,7 +17,7 @@ import logging
 import os
 from app.config import settings
 
-logger = logging.getLogger("artemis.docker")
+logger = logging.getLogger("phonepilot.docker")
 
 try:
     import docker
@@ -29,7 +29,7 @@ except ImportError:
 
 
 class DockerManagerService:
-    """Manages creation, monitoring, and deletion of ephemeral Artemis session containers via Docker Socket."""
+    """Manages creation, monitoring, and deletion of ephemeral PhonePilot session containers via Docker Socket."""
 
     def __init__(self):
         self._client: docker.DockerClient | None = None
@@ -60,14 +60,14 @@ class DockerManagerService:
         except Exception as e:
             logger.warning(f"[Docker Service] Network check warning: {e}")
 
-    async def start_artemis_container(
+    async def start_phonepilot_container(
         self,
         session_id: str,
         cuttlefish_host: str,
         cuttlefish_adb_port: int,
     ) -> dict:
-        """Spawn a dedicated Artemis session container connected to the target Cuttlefish emulator."""
-        container_name = f"{settings.ARTEMIS_CONTAINER_PREFIX}-{session_id}"
+        """Spawn a dedicated PhonePilot session container connected to the target Cuttlefish emulator."""
+        container_name = f"{settings.PHONEPILOT_CONTAINER_PREFIX}-{session_id}"
         adb_target = f"{cuttlefish_host}:{cuttlefish_adb_port}"
 
         logger.info(
@@ -115,17 +115,17 @@ class DockerManagerService:
                 if val:
                     env_vars[key] = val
 
-            # Launch Artemis container
+            # Launch PhonePilot container
             container = self._client.containers.run(
-                image=settings.ARTEMIS_IMAGE,
+                image=settings.PHONEPILOT_IMAGE,
                 name=container_name,
                 detach=True,
                 network=settings.DOCKER_NETWORK,
                 extra_hosts={"host.docker.internal": "host-gateway"},
                 environment=env_vars,
                 labels={
-                    "artemis.managed": "true",
-                    "artemis.session_id": session_id,
+                    "phonepilot.managed": "true",
+                    "phonepilot.session_id": session_id,
                 },
                 restart_policy={"Name": "on-failure", "MaximumRetryCount": 3},
             )
@@ -153,9 +153,9 @@ class DockerManagerService:
         logger.info(f"[Docker Service] Container {container_name} successfully booted.")
         return result
 
-    async def stop_artemis_container(self, session_id: str) -> None:
-        """Stop and remove an Artemis session container."""
-        container_name = f"{settings.ARTEMIS_CONTAINER_PREFIX}-{session_id}"
+    async def stop_phonepilot_container(self, session_id: str) -> None:
+        """Stop and remove an PhonePilot session container."""
+        container_name = f"{settings.PHONEPILOT_CONTAINER_PREFIX}-{session_id}"
         logger.info(f"[Docker Service] Stopping and removing container '{container_name}'...")
 
         if not self._client:

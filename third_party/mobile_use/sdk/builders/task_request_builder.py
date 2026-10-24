@@ -26,10 +26,10 @@ try:
 except ImportError:
     from typing import Self
 
-from artemis.constants import RECURSION_LIMIT
-from artemis.sdk.types.agent import AgentProfile
+from phonepilot.constants import RECURSION_LIMIT
+from phonepilot.sdk.types.agent import AgentProfile
 from pydantic import BaseModel
-from artemis.utils.cython_compat import CyFunctionDetector
+from phonepilot.utils.cython_compat import CyFunctionDetector
 from third_party.mobile_use.sdk.types.task import TaskRequest, TaskRequestCommon
 
 TIn = TypeVar("TIn", bound=BaseModel | None)

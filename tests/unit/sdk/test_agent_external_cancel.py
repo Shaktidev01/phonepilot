@@ -18,14 +18,14 @@ import asyncio
 
 import pytest
 
-from artemis.runtime import cancel_requests
-from artemis.sdk.agent import Agent
+from phonepilot.runtime import cancel_requests
+from phonepilot.sdk.agent import Agent
 
 
 @pytest.mark.asyncio
 async def test_external_cancel_marker_cancels_running_task(tmp_path, monkeypatch):
     monkeypatch.setattr(cancel_requests, "get_temp_dir", lambda _subfolder=None: tmp_path / "c")
-    monkeypatch.setenv("ARTEMIS_CANCEL_POLL_SECONDS", "0.05")
+    monkeypatch.setenv("PHONEPILOT_CANCEL_POLL_SECONDS", "0.05")
 
     agent = Agent.__new__(Agent)
     agent._session_id = "sess-cancel"

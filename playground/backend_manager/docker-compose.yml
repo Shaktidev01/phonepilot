@@ -24,19 +24,19 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      # Mount host Docker socket for spawning ephemeral Artemis containers
+      # Mount host Docker socket for spawning ephemeral PhonePilot containers
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - APP_ENV=production
       - PORT=8000
       - DOCKER_SOCKET_PATH=unix://var/run/docker.sock
-      - DOCKER_NETWORK=artemis-net
-      - ARTEMIS_IMAGE=artemis:latest
+      - DOCKER_NETWORK=phonepilot-net
+      - PHONEPILOT_IMAGE=phonepilot:latest
       - CLOUD_ORCHESTRATOR_URL=http://cloud-orchestrator:2081
       - CUTTLEFISH_HOST_GATEWAY=cloud-orchestrator
       - USE_LOCAL_FALLBACK_DB=true
     networks:
-      - artemis-net
+      - phonepilot-net
     extra_hosts:
       - "host.docker.internal:host-gateway"
     healthcheck:
@@ -46,6 +46,6 @@ services:
       retries: 3
 
 networks:
-  artemis-net:
-    name: artemis-net
+  phonepilot-net:
+    name: phonepilot-net
     driver: bridge

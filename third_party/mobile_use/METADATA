@@ -1,7 +1,7 @@
 name: "mobile-use"
 description:
     "AI-powered multi-agent framework for mobile device automation. "
-    "Only the portions used by Artemis are included."
+    "Only the portions used by PhonePilot are included."
 
 third_party {
   identifier {
@@ -19,9 +19,9 @@ third_party {
 
   local_modifications:
     "Only portions of upstream are included. Modifications by Google:\n"
-    "  - Renamed imports and identifiers to Artemis equivalents.\n"
-    "  - Removed code not used by Artemis (platform/cloud APIs, iOS, telemetry, etc.).\n"
-    "  - Restructured and extended some code for use by Artemis.\n"
+    "  - Renamed imports and identifiers to PhonePilot equivalents.\n"
+    "  - Removed code not used by PhonePilot (platform/cloud APIs, iOS, telemetry, etc.).\n"
+    "  - Restructured and extended some code for use by PhonePilot.\n"
     "  - Added Apache-2.0 file headers carrying the upstream copyright.\n"
     "All code derived from mobile-use lives in this directory.\n"
 }

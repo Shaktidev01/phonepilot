@@ -18,7 +18,7 @@
 
 """Single-task automation driver (upstream ``run_automation``).
 
-Used by the ``artemis run`` CLI command in ``artemis.interfaces.cli.commands.run``.
+Used by the ``phonepilot run`` CLI command in ``phonepilot.interfaces.cli.commands.run``.
 """
 
 import os
@@ -27,9 +27,9 @@ from typing import Annotated
 
 import typer
 
-from artemis import Agent, Builders
-from artemis.config import initialize_llm_config, settings
-from artemis.sdk.builders.agent_config_builder import AgentConfigBuilder
+from phonepilot import Agent, Builders
+from phonepilot.config import initialize_llm_config, settings
+from phonepilot.sdk.builders.agent_config_builder import AgentConfigBuilder
 from third_party.mobile_use.sdk.types.task import AgentProfile
 from third_party.mobile_use.utils.video import check_ffmpeg_available
 
@@ -103,8 +103,8 @@ async def run_automation(
     try:
         agent = Agent(config=config.build(), session_id=session_id)
         await agent.init(
-            retry_count=int(os.getenv("ARTEMIS_HEALTH_RETRIES", 5)),
-            retry_wait_seconds=int(os.getenv("ARTEMIS_HEALTH_DELAY", 2)),
+            retry_count=int(os.getenv("PHONEPILOT_HEALTH_RETRIES", 5)),
+            retry_wait_seconds=int(os.getenv("PHONEPILOT_HEALTH_DELAY", 2)),
         )
 
         task = agent.new_task(goal)

@@ -20,9 +20,9 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from artemis.drivers.base import KeyCode, ScreenData, SwipeDirection
-from artemis.drivers.mock.mock_driver import MockDeviceDriver
-from artemis.drivers.android.adb_driver import AndroidAdbDriver
+from phonepilot.drivers.base import KeyCode, ScreenData, SwipeDirection
+from phonepilot.drivers.mock.mock_driver import MockDeviceDriver
+from phonepilot.drivers.android.adb_driver import AndroidAdbDriver
 from third_party.mobile_use.controllers.types import ElementQuery
 
 
@@ -61,8 +61,8 @@ async def test_mock_driver_actions():
     assert driver.action_history[-1]["direction"] == "up"
 
     # 5. Input text
-    assert await driver.input_text("Hello Artemis") is True
-    assert driver.action_history[-1]["text"] == "Hello Artemis"
+    assert await driver.input_text("Hello PhonePilot") is True
+    assert driver.action_history[-1]["text"] == "Hello PhonePilot"
 
     # 6. Press key
     assert await driver.press_key(KeyCode.HOME) is True

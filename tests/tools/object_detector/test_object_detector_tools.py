@@ -14,8 +14,8 @@
 
 """Tests for object_detector universal tools."""
 
-from artemis.tools.base import ArtemisTool
-from artemis.tools.object_detection_tool import (
+from phonepilot.tools.base import PhonePilotTool
+from phonepilot.tools.object_detection_tool import (
     ObjectDetection,
     ObjectDetectionArgs,
     ObjectDetectionTool,
@@ -30,18 +30,18 @@ from artemis.tools.object_detection_tool import (
 
 
 def test_object_detector_tool_subclass():
-    """Verify ObjectDetectionTool is an ArtemisTool subclass."""
-    assert issubclass(ObjectDetectionTool, ArtemisTool)
-    assert issubclass(ObjectDetection, ArtemisTool)
-    assert issubclass(ObjectDetectorTool, ArtemisTool)
-    assert issubclass(OperatorObjectDetectionTool, ArtemisTool)
+    """Verify ObjectDetectionTool is an PhonePilotTool subclass."""
+    assert issubclass(ObjectDetectionTool, PhonePilotTool)
+    assert issubclass(ObjectDetection, PhonePilotTool)
+    assert issubclass(ObjectDetectorTool, PhonePilotTool)
+    assert issubclass(OperatorObjectDetectionTool, PhonePilotTool)
     assert issubclass(OperatorObjectDetectionTool, ObjectDetectionTool)
-    assert issubclass(OperatorObjectDetection, ArtemisTool)
-    assert issubclass(OperatorObjectDetectorTool, ArtemisTool)
+    assert issubclass(OperatorObjectDetection, PhonePilotTool)
+    assert issubclass(OperatorObjectDetectorTool, PhonePilotTool)
 
-    assert isinstance(object_detection, ArtemisTool)
+    assert isinstance(object_detection, PhonePilotTool)
     assert isinstance(object_detection, ObjectDetectionTool)
-    assert isinstance(operator_object_detection, ArtemisTool)
+    assert isinstance(operator_object_detection, PhonePilotTool)
     assert isinstance(operator_object_detection, OperatorObjectDetectionTool)
 
     assert object_detection.name == "object_detection"

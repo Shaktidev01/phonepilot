@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from artemis.tools.diagnoser_submit_answer_tool import get_submit_answer_tool
+from phonepilot.tools.diagnoser_submit_answer_tool import get_submit_answer_tool
 
 
-def test_diagnoser_submit_answer_tool(artemis_context):
-    tool = get_submit_answer_tool(artemis_context)
+def test_diagnoser_submit_answer_tool(phonepilot_context):
+    tool = get_submit_answer_tool(phonepilot_context)
 
     # Execute the tool with some typical payload
     result = tool.invoke(
@@ -32,9 +32,9 @@ def test_diagnoser_submit_answer_tool(artemis_context):
 
 
 def test_submit_answer_tool_subclass():
-    """Verify SubmitAnswerTool is an ArtemisTool subclass."""
-    from artemis.tools.base import ArtemisTool
-    from artemis.tools.diagnoser_submit_answer_tool import (
+    """Verify SubmitAnswerTool is an PhonePilotTool subclass."""
+    from phonepilot.tools.base import PhonePilotTool
+    from phonepilot.tools.diagnoser_submit_answer_tool import (
         DiagnoserSubmitAnswerTool,
         SubmitAnswer,
         SubmitAnswerArgs,
@@ -42,10 +42,10 @@ def test_submit_answer_tool_subclass():
         submit_answer,
     )
 
-    assert issubclass(SubmitAnswerTool, ArtemisTool)
-    assert issubclass(SubmitAnswer, ArtemisTool)
-    assert issubclass(DiagnoserSubmitAnswerTool, ArtemisTool)
-    assert isinstance(submit_answer, ArtemisTool)
+    assert issubclass(SubmitAnswerTool, PhonePilotTool)
+    assert issubclass(SubmitAnswer, PhonePilotTool)
+    assert issubclass(DiagnoserSubmitAnswerTool, PhonePilotTool)
+    assert isinstance(submit_answer, PhonePilotTool)
     assert isinstance(submit_answer, SubmitAnswerTool)
 
     assert submit_answer.name == "submit_answer"
@@ -60,9 +60,9 @@ def test_submit_answer_tool_subclass():
 
 
 def test_ask_diagnoser_tool_subclass():
-    """Verify AskDiagnoserTool is an ArtemisTool subclass."""
-    from artemis.tools.base import ArtemisTool
-    from artemis.tools.diagnostic_tool import (
+    """Verify AskDiagnoserTool is an PhonePilotTool subclass."""
+    from phonepilot.tools.base import PhonePilotTool
+    from phonepilot.tools.diagnostic_tool import (
         AskDiagnoser,
         AskDiagnoserArgs,
         AskDiagnoserTool,
@@ -70,10 +70,10 @@ def test_ask_diagnoser_tool_subclass():
         ask_diagnoser,
     )
 
-    assert issubclass(AskDiagnoserTool, ArtemisTool)
-    assert issubclass(AskDiagnoser, ArtemisTool)
-    assert issubclass(DiagnosticTool, ArtemisTool)
-    assert isinstance(ask_diagnoser, ArtemisTool)
+    assert issubclass(AskDiagnoserTool, PhonePilotTool)
+    assert issubclass(AskDiagnoser, PhonePilotTool)
+    assert issubclass(DiagnosticTool, PhonePilotTool)
+    assert isinstance(ask_diagnoser, PhonePilotTool)
     assert isinstance(ask_diagnoser, AskDiagnoserTool)
 
     assert ask_diagnoser.name == "ask_diagnoser"
@@ -87,9 +87,9 @@ def test_ask_diagnoser_tool_subclass():
 
 
 def test_analyze_logs_tool_subclass():
-    """Verify AnalyzeLogsTool is an ArtemisTool subclass."""
-    from artemis.tools.base import ArtemisTool
-    from artemis.tools.log_tool import (
+    """Verify AnalyzeLogsTool is an PhonePilotTool subclass."""
+    from phonepilot.tools.base import PhonePilotTool
+    from phonepilot.tools.log_tool import (
         AnalyzeLogs,
         AnalyzeLogsArgs,
         AnalyzeLogsTool,
@@ -97,10 +97,10 @@ def test_analyze_logs_tool_subclass():
         analyze_logs,
     )
 
-    assert issubclass(AnalyzeLogsTool, ArtemisTool)
-    assert issubclass(AnalyzeLogs, ArtemisTool)
-    assert issubclass(LogTool, ArtemisTool)
-    assert isinstance(analyze_logs, ArtemisTool)
+    assert issubclass(AnalyzeLogsTool, PhonePilotTool)
+    assert issubclass(AnalyzeLogs, PhonePilotTool)
+    assert issubclass(LogTool, PhonePilotTool)
+    assert isinstance(analyze_logs, PhonePilotTool)
     assert isinstance(analyze_logs, AnalyzeLogsTool)
 
     assert analyze_logs.name == "analyze_logs"

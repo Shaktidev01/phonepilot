@@ -205,7 +205,7 @@
     }
   },
   "take_screenshot": {
-    "description": "Takes a screenshot of the device screen.\n\nReturns the screenshot as a base64 encoded JPEG string.\n",
+    "description": "Takes a screenshot of the device screen.\n\nReturns the screenshot as a JPEG image the model can see directly.\n",
     "inputSchema": {
       "properties": {},
       "title": "take_screenshotArguments",

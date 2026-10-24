@@ -28,7 +28,7 @@ def create_access_token(user_id: str, extra_claims: dict | None = None) -> str:
         "sub": user_id,
         "exp": expire,
         "iat": datetime.now(UTC),
-        "iss": "artemis-backend-manager",
+        "iss": "phonepilot-backend-manager",
     }
     if extra_claims:
         to_encode.update(extra_claims)

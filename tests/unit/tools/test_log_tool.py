@@ -14,10 +14,10 @@
 
 from unittest.mock import AsyncMock, MagicMock, patch
 
-from artemis.context import ArtemisContext
-from artemis.graph.state import State
-from artemis.tools.base import ArtemisTool
-from artemis.tools.log_tool import (
+from phonepilot.context import PhonePilotContext
+from phonepilot.graph.state import State
+from phonepilot.tools.base import PhonePilotTool
+from phonepilot.tools.log_tool import (
     AnalyzeLogs,
     AnalyzeLogsArgs,
     AnalyzeLogsTool,
@@ -31,7 +31,7 @@ import pytest
 
 @pytest.mark.asyncio
 async def test_analyze_logs_tool_execution():
-    mock_ctx = MagicMock(spec=ArtemisContext)
+    mock_ctx = MagicMock(spec=PhonePilotContext)
     mock_ctx.data_engine = None
 
     mock_state = MagicMock(spec=State)
@@ -42,7 +42,7 @@ async def test_analyze_logs_tool_execution():
     mock_analyst.run = AsyncMock(return_value=expected_output)
 
     with patch(
-        "artemis.tools.log_tool.LogAnalyzerNode",
+        "phonepilot.tools.log_tool.LogAnalyzerNode",
         return_value=mock_analyst,
     ):
         tool = get_analyze_logs_tool(mock_ctx)
@@ -60,14 +60,14 @@ async def test_analyze_logs_tool_execution():
 
 @pytest.mark.asyncio
 async def test_analyze_logs_tool_direct_call():
-    mock_ctx = MagicMock(spec=ArtemisContext)
+    mock_ctx = MagicMock(spec=PhonePilotContext)
     mock_state = MagicMock(spec=State)
 
     mock_analyst = MagicMock()
     mock_analyst.run = AsyncMock(return_value="Log scan complete.")
 
     with patch(
-        "artemis.tools.log_tool.LogAnalyzerNode",
+        "phonepilot.tools.log_tool.LogAnalyzerNode",
         return_value=mock_analyst,
     ):
         result = await analyze_logs(
@@ -85,15 +85,15 @@ async def test_analyze_logs_tool_no_context():
         ctx=None,
         specific_query="Find crash",
     )
-    assert result == "Error: ArtemisContext is required for LogAnalyzer."
+    assert result == "Error: PhonePilotContext is required for LogAnalyzer."
 
 
 def test_analyze_logs_tool_subclass():
-    """Verify AnalyzeLogsTool is an ArtemisTool subclass."""
-    assert issubclass(AnalyzeLogsTool, ArtemisTool)
-    assert issubclass(AnalyzeLogs, ArtemisTool)
-    assert issubclass(LogTool, ArtemisTool)
-    assert isinstance(analyze_logs, ArtemisTool)
+    """Verify AnalyzeLogsTool is an PhonePilotTool subclass."""
+    assert issubclass(AnalyzeLogsTool, PhonePilotTool)
+    assert issubclass(AnalyzeLogs, PhonePilotTool)
+    assert issubclass(LogTool, PhonePilotTool)
+    assert isinstance(analyze_logs, PhonePilotTool)
     assert isinstance(analyze_logs, AnalyzeLogsTool)
 
     assert analyze_logs.name == "analyze_logs"

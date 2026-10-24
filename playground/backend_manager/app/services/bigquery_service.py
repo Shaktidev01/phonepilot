@@ -17,7 +17,7 @@ import logging
 from app.config import settings
 from app.schemas.session_schema import SessionRecord, SessionStatus
 
-logger = logging.getLogger("artemis.bigquery")
+logger = logging.getLogger("phonepilot.bigquery")
 
 try:
     from google.cloud import bigquery
@@ -67,9 +67,9 @@ class BigQueryMappingService:
         schema = [
             bigquery.SchemaField("user_id", "STRING", mode="REQUIRED"),
             bigquery.SchemaField("session_id", "STRING", mode="REQUIRED"),
-            bigquery.SchemaField("artemis_container_id", "STRING", mode="NULLABLE"),
-            bigquery.SchemaField("artemis_container_name", "STRING", mode="NULLABLE"),
-            bigquery.SchemaField("artemis_internal_ip", "STRING", mode="NULLABLE"),
+            bigquery.SchemaField("phonepilot_container_id", "STRING", mode="NULLABLE"),
+            bigquery.SchemaField("phonepilot_container_name", "STRING", mode="NULLABLE"),
+            bigquery.SchemaField("phonepilot_internal_ip", "STRING", mode="NULLABLE"),
             bigquery.SchemaField("cuttlefish_instance_id", "STRING", mode="NULLABLE"),
             bigquery.SchemaField("cuttlefish_adb_port", "INTEGER", mode="NULLABLE"),
             bigquery.SchemaField("cuttlefish_webrtc_port", "INTEGER", mode="NULLABLE"),
@@ -100,9 +100,9 @@ class BigQueryMappingService:
                 row = {
                     "user_id": record.user_id,
                     "session_id": record.session_id,
-                    "artemis_container_id": record.artemis_container_id,
-                    "artemis_container_name": record.artemis_container_name,
-                    "artemis_internal_ip": record.artemis_internal_ip,
+                    "phonepilot_container_id": record.phonepilot_container_id,
+                    "phonepilot_container_name": record.phonepilot_container_name,
+                    "phonepilot_internal_ip": record.phonepilot_internal_ip,
                     "cuttlefish_instance_id": record.cuttlefish_instance_id,
                     "cuttlefish_adb_port": record.cuttlefish_adb_port,
                     "cuttlefish_webrtc_port": record.cuttlefish_webrtc_port,

@@ -1,20 +1,20 @@
-# 🌐 Artemis Ingress Reverse Proxy Container
+# 🌐 PhonePilot Ingress Reverse Proxy Container
 
-Production-ready, high-performance Nginx Reverse Proxy container designed for running Artemis on a **Container-Optimized OS (COS)** VM in Google Cloud.
+Production-ready, high-performance Nginx Reverse Proxy container designed for running PhonePilot on a **Container-Optimized OS (COS)** VM in Google Cloud.
 
 ---
 
 ## 📌 Architecture & Routing Matrix
 
-The proxy acts as the single TLS/SSL termination gateway on standard ports (`80` $\rightarrow$ `443`), dynamically routing traffic to persistent platform services and on-demand ephemeral Artemis session containers without needing Nginx reload or restart:
+The proxy acts as the single TLS/SSL termination gateway on standard ports (`80` $\rightarrow$ `443`), dynamically routing traffic to persistent platform services and on-demand ephemeral PhonePilot session containers without needing Nginx reload or restart:
 
 | Path Prefix | Destination Upstream | Protocol | Purpose |
 | :--- | :--- | :--- | :--- |
 | `GET /healthz` | Nginx Internal | HTTP/HTTPS | Ingress health check probe |
 | `/` | `http://backend:8000/` | HTTP/1.1 | Static frontend Single Page Application (React/Vue/Angular) |
 | `/api/*` | `http://backend:8000/api/*` | HTTP/1.1 / WS | Management API, OTP auth verification, session lifecycle |
-| `/session/{id}/artemis/stream/*` | `http://artemis-session-{id}:8080/stream/*` | **SSE / WebSocket** | Real-time agent thought stream (zero buffering, 1h timeout) |
-| `/session/{id}/artemis/*` | `http://artemis-session-{id}:8080/*` | HTTP/1.1 / WS | Artemis REST API and task execution endpoints |
+| `/session/{id}/phonepilot/stream/*` | `http://phonepilot-session-{id}:8080/stream/*` | **SSE / WebSocket** | Real-time agent thought stream (zero buffering, 1h timeout) |
+| `/session/{id}/phonepilot/*` | `http://phonepilot-session-{id}:8080/*` | HTTP/1.1 / WS | PhonePilot REST API and task execution endpoints |
 | `/session/{id}/cuttlefish/*` | `http://host.docker.internal:8443/*` | **WebRTC / WS** | Cuttlefish WebRTC signaling & interactive device controls |
 
 ---
@@ -25,7 +25,7 @@ The proxy acts as the single TLS/SSL termination gateway on standard ports (`80`
 playground/nginx_container/
 ├── Dockerfile                   # Nginx alpine image with openssl and health checks
 ├── docker-entrypoint.sh         # Auto-generates dev certificates & tests nginx syntax
-├── docker-compose.yml           # Compose specification with artemis-net bridge network
+├── docker-compose.yml           # Compose specification with phonepilot-net bridge network
 ├── .dockerignore
 ├── README.md                    # Detailed operational documentation
 ├── certs/
@@ -35,7 +35,7 @@ playground/nginx_container/
 │   ├── nginx.conf               # Master Nginx configuration (JSON logging, WebSocket map)
 │   ├── conf.d/
 │   │   ├── http_redirect.conf   # Port 80 redirect to Port 443 + ACME challenge
-│   │   └── artemis_ssl.conf     # Port 443 SSL server block & dynamic Docker DNS routing
+│   │   └── phonepilot_ssl.conf     # Port 443 SSL server block & dynamic Docker DNS routing
 │   └── includes/
 │       ├── proxy_headers.conf   # Standard forwarding headers (Host, X-Real-IP, X-Forwarded-*)
 │       ├── websocket_params.conf# WebSocket upgrade headers & 3600s timeouts
@@ -52,7 +52,7 @@ playground/nginx_container/
 
 ### 1. Build the Docker Image
 ```bash
-docker build -t artemis-nginx-proxy:latest .
+docker build -t phonepilot-nginx-proxy:latest .
 ```
 
 ### 2. Run with Docker Compose
@@ -63,18 +63,18 @@ docker-compose up -d
 ### 3. Run Standalone on COS VM
 ```bash
 # Create shared bridge network if not exists
-docker network create artemis-net || true
+docker network create phonepilot-net || true
 
 # Run Nginx Reverse Proxy Container
 docker run -d \
-  --name artemis-nginx-proxy \
+  --name phonepilot-nginx-proxy \
   --restart unless-stopped \
-  --network artemis-net \
+  --network phonepilot-net \
   --add-host host.docker.internal:host-gateway \
   -p 80:80 \
   -p 443:443 \
   -v $(pwd)/certs:/etc/nginx/certs:ro \
-  artemis-nginx-proxy:latest
+  phonepilot-nginx-proxy:latest
 ```
 
 ---
@@ -82,15 +82,15 @@ docker run -d \
 ## 🔑 Key Features & Technical Highlights
 
 ### 1. Dynamic Zero-Reload Upstream Resolution
-When a user launches a new session, the backend starts a new Docker container named `artemis-session-<session_id>` on the `artemis-net` network.
+When a user launches a new session, the backend starts a new Docker container named `phonepilot-session-<session_id>` on the `phonepilot-net` network.
 
 Using Docker's embedded DNS server (`127.0.0.11 valid=5s`) combined with variable-based `proxy_pass`:
 ```nginx
 resolver 127.0.0.11 valid=5s ipv6=off;
 
-location ~ ^/session/(?<session_id>[a-zA-Z0-9_-]+)/artemis/(?<artemis_path>.*)$ {
-    set $artemis_host "artemis-session-$session_id";
-    proxy_pass http://$artemis_host:8080/$artemis_path$is_args$args;
+location ~ ^/session/(?<session_id>[a-zA-Z0-9_-]+)/phonepilot/(?<phonepilot_path>.*)$ {
+    set $phonepilot_host "phonepilot-session-$session_id";
+    proxy_pass http://$phonepilot_host:8080/$phonepilot_path$is_args$args;
 }
 ```
 Nginx resolves the container hostname at **request-time**, allowing session containers to be created and destroyed without touching or reloading Nginx configuration.
@@ -119,9 +119,9 @@ If a requested session container is still booting or unavailable, Nginx returns 
 2. **Test Dynamic Routing**:
    ```bash
    # Launch a mock session container
-   docker run -d --name artemis-session-test123 --network artemis-net hashicorp/http-echo -text="Hello from Session test123" -listen=:8080
+   docker run -d --name phonepilot-session-test123 --network phonepilot-net hashicorp/http-echo -text="Hello from Session test123" -listen=:8080
 
    # Test via Nginx proxy
-   curl -k https://localhost/session/test123/artemis/
+   curl -k https://localhost/session/test123/phonepilot/
    # Output: Hello from Session test123
    ```

@@ -24,9 +24,9 @@ import subprocess
 import time
 from collections.abc import AsyncGenerator
 
-from artemis.toolchain import find_adb
+from phonepilot.toolchain import find_adb
 
-logger = logging.getLogger("artemis.stream_service")
+logger = logging.getLogger("phonepilot.stream_service")
 
 
 class DeviceStreamService:

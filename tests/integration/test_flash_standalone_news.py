@@ -21,9 +21,9 @@ from dotenv import load_dotenv
 # Ensure we can import from project
 sys.path.append(os.path.dirname(__file__))
 
-from artemis.sdk import Agent
-from artemis.sdk.builders import Builders
-from artemis.sdk.types import AgentProfile
+from phonepilot.sdk import Agent
+from phonepilot.sdk.builders import Builders
+from phonepilot.sdk.types import AgentProfile
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("test_flash_standalone")

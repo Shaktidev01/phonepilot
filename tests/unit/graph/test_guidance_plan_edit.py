@@ -21,15 +21,15 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from artemis.graph.perception import perception_node
-from artemis.graph.state import State
+from phonepilot.graph.perception import perception_node
+from phonepilot.graph.state import State
 
 
 async def _run_perception(ctx, payload):
     with (
-        patch("artemis.graph.perception.is_ocr_configured", return_value=False),
-        patch("artemis.graph.perception.UnifiedMobileController") as controller_cls,
-        patch("artemis.graph.perception._check_injected_instruction_file", return_value=payload),
+        patch("phonepilot.graph.perception.is_ocr_configured", return_value=False),
+        patch("phonepilot.graph.perception.UnifiedMobileController") as controller_cls,
+        patch("phonepilot.graph.perception._check_injected_instruction_file", return_value=payload),
     ):
         device_data = MagicMock()
         device_data.width = 1080
@@ -49,7 +49,7 @@ PLAN = "- [/] Set the alarm\n  - verify: the alarm list shows 7:30 AM\n- [ ] Nex
 
 
 def _ctx(tmp_path):
-    from artemis.utils.notes import get_note_file_path
+    from phonepilot.utils.notes import get_note_file_path
 
     ctx = MagicMock()
     ctx.data_engine = MagicMock()

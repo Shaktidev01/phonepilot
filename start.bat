@@ -15,12 +15,12 @@ rem limitations under the License.
 
 chcp 65001 >nul 2>&1
 setlocal EnableDelayedExpansion
-title Artemis Mobile Agent UI
+title PhonePilot Mobile Agent UI
 
 cd /d "%~dp0"
 
 echo ======================================================
-echo       Artemis Autonomous Mobile Agent UI
+echo       PhonePilot Autonomous Mobile Agent UI
 echo ======================================================
 echo.
 
@@ -29,7 +29,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\start.ps1" %*
 
 if %ERRORLEVEL% NEQ 0 (
     echo.
-    echo An error occurred while starting Artemis.
+    echo An error occurred while starting PhonePilot.
     pause
 )
 

@@ -18,15 +18,15 @@ from types import SimpleNamespace
 
 import pytest
 
-from artemis.agents.operator.prompts import (
+from phonepilot.agents.operator.prompts import (
     EXECUTION_INCIDENT_MARKER,
     ExecutionIncidentPromptComponent,
     PromptBuilder,
     render_closed_incident,
     render_execution_incident,
 )
-from artemis.agents.validator.categories import ValidationErrorCategory
-from artemis.agents.validator.incidents import (
+from phonepilot.agents.validator.categories import ValidationErrorCategory
+from phonepilot.agents.validator.incidents import (
     KIND_EXEC_ERROR,
     KIND_SAFETY_NET,
     ExecutionIncident,

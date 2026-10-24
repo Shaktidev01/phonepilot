@@ -36,10 +36,10 @@ class DummyState:
 @pytest.fixture
 def mock_context():
     """Create a properly mocked context with all required fields."""
-    from artemis.config import LLM
-    from artemis.context import ArtemisContext
+    from phonepilot.config import LLM
+    from phonepilot.context import PhonePilotContext
 
-    ctx = Mock(spec=ArtemisContext)
+    ctx = Mock(spec=PhonePilotContext)
     ctx.llm_config = {
         "planner": LLM(provider="openai", model="gpt-5-nano"),
         "operator": LLM(provider="openai", model="gpt-5-nano"),

@@ -29,11 +29,11 @@ from app.services.bigquery_service import bigquery_service
 from app.services.cloud_orchestrator_service import cloud_orchestrator_service
 from app.services.docker_service import docker_manager
 
-logger = logging.getLogger("artemis.session_manager")
+logger = logging.getLogger("phonepilot.session_manager")
 
 
 class SessionManagerService:
-    """Master orchestrator for multi-tenant Artemis session containers and Cuttlefish AVDs."""
+    """Master orchestrator for multi-tenant PhonePilot session containers and Cuttlefish AVDs."""
 
     def __init__(self):
         self._reaper_task: asyncio.Task | None = None
@@ -76,7 +76,7 @@ class SessionManagerService:
                 logger.error(f"[Session Reaper] Error in reaper loop: {e}")
 
     async def create_session(self, user_id: str, request: CreateSessionRequest) -> SessionResponse:
-        """Provision a new Cuttlefish emulator + Artemis container and link them via ADB."""
+        """Provision a new Cuttlefish emulator + PhonePilot container and link them via ADB."""
         session_id = str(uuid.uuid4())
         now = datetime.now(UTC)
         expires_at = now + timedelta(minutes=request.ttl_minutes)
@@ -106,15 +106,15 @@ class SessionManagerService:
             record.cuttlefish_adb_port = cf_info.adb_port
             record.cuttlefish_webrtc_port = cf_info.webrtc_port
 
-            # 2. Start Artemis Container via Docker Socket
-            docker_info = await docker_manager.start_artemis_container(
+            # 2. Start PhonePilot Container via Docker Socket
+            docker_info = await docker_manager.start_phonepilot_container(
                 session_id=session_id,
                 cuttlefish_host=cf_info.host,
                 cuttlefish_adb_port=cf_info.adb_port,
             )
-            record.artemis_container_id = docker_info["container_id"]
-            record.artemis_container_name = docker_info["container_name"]
-            record.artemis_internal_ip = docker_info["internal_ip"]
+            record.phonepilot_container_id = docker_info["container_id"]
+            record.phonepilot_container_name = docker_info["container_name"]
+            record.phonepilot_internal_ip = docker_info["internal_ip"]
             record.status = SessionStatus.ACTIVE
 
             # 3. Save finalized state to BigQuery
@@ -153,7 +153,7 @@ class SessionManagerService:
                 status=r.status,
                 created_at=r.created_at,
                 expires_at=r.expires_at,
-                artemis_container_id=r.artemis_container_id,
+                phonepilot_container_id=r.phonepilot_container_id,
             )
             for r in records
         ]
@@ -200,7 +200,7 @@ class SessionManagerService:
     async def _cleanup_resources(self, session_id: str):
         """Clean up Docker container and Cloud Orchestrator instance."""
         await asyncio.gather(
-            docker_manager.stop_artemis_container(session_id),
+            docker_manager.stop_phonepilot_container(session_id),
             cloud_orchestrator_service.destroy_cuttlefish_instance(session_id),
             return_exceptions=True,
         )
@@ -211,8 +211,8 @@ class SessionManagerService:
             session_id=record.session_id,
             status=record.status,
             # Routes through Nginx reverse proxy
-            artemis_api_url=f"/session/{record.session_id}/artemis/",
-            artemis_stream_url=f"/session/{record.session_id}/artemis/api/stream/active",
+            phonepilot_api_url=f"/session/{record.session_id}/phonepilot/",
+            phonepilot_stream_url=f"/session/{record.session_id}/phonepilot/api/stream/active",
             cuttlefish_webrtc_url=f"/session/{record.session_id}/cuttlefish/",
             cuttlefish_adb_endpoint=f"{settings.CUTTLEFISH_HOST_GATEWAY}:{record.cuttlefish_adb_port}",
             created_at=record.created_at,

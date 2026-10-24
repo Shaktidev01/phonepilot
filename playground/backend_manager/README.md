@@ -1,6 +1,6 @@
-# 🚀 Artemis Backend Manager Container
+# 🚀 PhonePilot Backend Manager Container
 
-The central orchestration, API gateway, authentication, and container lifecycle service for running Artemis and Cuttlefish on Google Cloud **Container-Optimized OS (COS)**.
+The central orchestration, API gateway, authentication, and container lifecycle service for running PhonePilot and Cuttlefish on Google Cloud **Container-Optimized OS (COS)**.
 
 ---
 
@@ -12,7 +12,7 @@ The central orchestration, API gateway, authentication, and container lifecycle 
    - Provides session validation hooks for Nginx ingress (`/api/v1/auth/validate-session`).
 
 2. **Docker Socket Container Orchestration**:
-   - Communicates with `/var/run/docker.sock` to dynamically spawn `artemis-session-<session_id>` containers on the shared `artemis-net` bridge network.
+   - Communicates with `/var/run/docker.sock` to dynamically spawn `phonepilot-session-<session_id>` containers on the shared `phonepilot-net` bridge network.
    - Injects runtime environment variables (`SESSION_ID`, `ADB_DEVICE_SERIAL`, `PORT=8080`).
    - Automatically executes `adb connect` inside the container to pair it with the Cuttlefish emulator.
 
@@ -21,11 +21,11 @@ The central orchestration, API gateway, authentication, and container lifecycle 
    - Binds allocated ADB ports (`6520+N`) and WebRTC signaling ports (`8443+N`).
 
 4. **BigQuery Mapping Store**:
-   - Tracks metadata linking `user_id`, `session_id`, `artemis_container_id`, `cuttlefish_adb_port`, `cuttlefish_webrtc_port`, and timestamps.
-   - Includes automatic partitioned table creation on BigQuery (`artemis_orchestration.sessions_registry`) and an in-memory fallback for local dev.
+   - Tracks metadata linking `user_id`, `session_id`, `phonepilot_container_id`, `cuttlefish_adb_port`, `cuttlefish_webrtc_port`, and timestamps.
+   - Includes automatic partitioned table creation on BigQuery (`phonepilot_orchestration.sessions_registry`) and an in-memory fallback for local dev.
 
 5. **Static Frontend UI Host**:
-   - Serves the dual-pane web application (Cuttlefish WebRTC stream player + Artemis agent thought workspace) at `/`.
+   - Serves the dual-pane web application (Cuttlefish WebRTC stream player + PhonePilot agent thought workspace) at `/`.
 
 6. **Automatic Session Reaper & Watchdog**:
    - Background periodic worker checks active sessions every 30s.
@@ -76,7 +76,7 @@ playground/backend_manager/
 * `GET /api/v1/auth/validate-session?session_id=...` — Validate user authorization for a specific session.
 
 ### Sessions & Container Management
-* `POST /api/v1/sessions/create` — Provision Cuttlefish AVD + Artemis container, link ADB, and register mapping.
+* `POST /api/v1/sessions/create` — Provision Cuttlefish AVD + PhonePilot container, link ADB, and register mapping.
 * `GET /api/v1/sessions` — List all active sessions for the current user.
 * `GET /api/v1/sessions/{session_id}` — Get session status and reverse-proxy stream endpoints.
 * `POST /api/v1/sessions/{session_id}/heartbeat` — Send client heartbeat to extend session TTL.
@@ -93,13 +93,13 @@ playground/backend_manager/
 | :--- | :--- | :--- |
 | `PORT` | `8000` | HTTP port to listen on |
 | `APP_ENV` | `development` | Environment mode (`development` / `production`) |
-| `JWT_SECRET_KEY` | `artemis-...` | Secret key for signing JWT session tokens |
+| `JWT_SECRET_KEY` | `phonepilot-...` | Secret key for signing JWT session tokens |
 | `DOCKER_SOCKET_PATH` | `unix://var/run/docker.sock` | Path to host Docker daemon socket |
-| `DOCKER_NETWORK` | `artemis-net` | Shared bridge network for dynamic container routing |
-| `ARTEMIS_IMAGE` | `artemis:latest` | Docker image to spawn for Artemis instances |
+| `DOCKER_NETWORK` | `phonepilot-net` | Shared bridge network for dynamic container routing |
+| `PHONEPILOT_IMAGE` | `phonepilot:latest` | Docker image to spawn for PhonePilot instances |
 | `CLOUD_ORCHESTRATOR_URL` | `http://host.docker.internal:1443` | Endpoint of the Cloud Orchestrator service |
 | `CUTTLEFISH_HOST_GATEWAY` | `host.docker.internal` | Host IP / gateway for ADB TCP connections |
-| `GOOGLE_CLOUD_PROJECT` | `artemis-cloud-project` | GCP project ID for BigQuery dataset |
+| `GOOGLE_CLOUD_PROJECT` | `phonepilot-cloud-project` | GCP project ID for BigQuery dataset |
 | `USE_LOCAL_FALLBACK_DB` | `true` | Enables in-memory DB fallback if BigQuery is unconfigured |
 | `SESSION_TTL_MINUTES` | `60` | Default session lifespan before automatic teardown |
 
@@ -109,7 +109,7 @@ playground/backend_manager/
 
 ### 1. Build Image
 ```bash
-docker build -t artemis-backend-manager:latest .
+docker build -t phonepilot-backend-manager:latest .
 ```
 
 ### 2. Run with Docker Compose
@@ -122,9 +122,9 @@ docker-compose up -d
 docker run -d \
   --name backend \
   --restart unless-stopped \
-  --network artemis-net \
+  --network phonepilot-net \
   --add-host host.docker.internal:host-gateway \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -p 8000:8000 \
-  artemis-backend-manager:latest
+  phonepilot-backend-manager:latest
 ```

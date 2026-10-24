@@ -1,4 +1,4 @@
-/* Artemis Aurora & Glassmorphism Design System */
+/* PhonePilot Aurora & Glassmorphism Design System */
 :root {
   --bg-primary: #0b0f19;
   --bg-card: rgba(23, 32, 54, 0.7);
@@ -247,7 +247,7 @@ body {
   border: none;
 }
 
-/* Right Pane: Artemis Workspace */
+/* Right Pane: PhonePilot Workspace */
 .agent-logs {
   flex: 1;
   padding: 16px;

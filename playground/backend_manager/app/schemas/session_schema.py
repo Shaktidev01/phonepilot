@@ -31,7 +31,7 @@ class CreateSessionRequest(BaseModel):
         default="pixel_7_pro", description="Target Cuttlefish device configuration"
     )
     initial_task: str | None = Field(
-        default=None, description="Optional initial prompt/task for Artemis"
+        default=None, description="Optional initial prompt/task for PhonePilot"
     )
     ttl_minutes: int = Field(
         default=60, ge=5, le=480, description="Session time to live in minutes"
@@ -41,9 +41,9 @@ class CreateSessionRequest(BaseModel):
 class SessionRecord(BaseModel):
     user_id: str
     session_id: str
-    artemis_container_id: str | None = None
-    artemis_container_name: str | None = None
-    artemis_internal_ip: str | None = None
+    phonepilot_container_id: str | None = None
+    phonepilot_container_name: str | None = None
+    phonepilot_internal_ip: str | None = None
     cuttlefish_instance_id: str | None = None
     cuttlefish_adb_port: int | None = None
     cuttlefish_webrtc_port: int | None = None
@@ -57,8 +57,8 @@ class SessionRecord(BaseModel):
 class SessionResponse(BaseModel):
     session_id: str
     status: SessionStatus
-    artemis_api_url: str
-    artemis_stream_url: str
+    phonepilot_api_url: str
+    phonepilot_stream_url: str
     cuttlefish_webrtc_url: str
     cuttlefish_adb_endpoint: str
     created_at: datetime
@@ -71,7 +71,7 @@ class SessionListItem(BaseModel):
     status: SessionStatus
     created_at: datetime
     expires_at: datetime
-    artemis_container_id: str | None
+    phonepilot_container_id: str | None
 
 
 class HeartbeatResponse(BaseModel):

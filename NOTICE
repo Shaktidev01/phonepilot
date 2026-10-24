@@ -1,0 +1,25 @@
+PhonePilot
+Modified fork of ARTEMIS (https://github.com/google/artemis).
+
+Original work: Copyright 2026 Google LLC, licensed under the Apache License,
+Version 2.0 (see LICENSE). Original copyright and license headers are retained
+in every source file.
+
+This is not an official Google product, and Google does not endorse it. The
+names "ARTEMIS" and "Google" are used here only to credit the original project.
+
+Changes made in this fork:
+  - Renamed the project, Python package (artemis -> phonepilot), client package
+    (artemis-client -> phonepilot-client), CLI, MCP server name, config file
+    (config/phonepilot.jsonc) and environment variable prefix
+    (ARTEMIS_* -> PHONEPILOT_*).
+  - phonepilot/mcp/adb_server.py: take_screenshot now returns an MCP image
+    instead of a base64 text string, so vision-capable MCP clients can see it.
+  - `phonepilot mcp --install claude` also registers the key-free
+    `phonepilot-direct` server (the stdio ADB tools) for Claude Code.
+  - README: fork notice, Claude Code section, benchmark attribution.
+
+Unchanged on purpose: the prebuilt Android accessibility helper
+(packages/artemis-accessibility-helper, package id com.artemis.helper) and the
+compiled web console under phonepilot/resources/showcase_ui. Both keep upstream
+names until they are rebuilt. Images under docs/assets/ are upstream's.

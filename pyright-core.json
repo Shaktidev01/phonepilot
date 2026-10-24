@@ -2,16 +2,16 @@
   "venvPath": ".",
   "venv": ".venv",
   "include": [
-    "artemis/graph/state.py",
-    "artemis/graph/visibility.py",
-    "artemis/runtime/adb_endpoint.py",
-    "artemis/runtime/process_probe.py",
-    "artemis/mcp/action_types.py",
-    "artemis/data_engine/models.py",
-    "artemis/agents/explorer/native_runner.py",
-    "artemis/agents/explorer/perception_tools.py",
+    "phonepilot/graph/state.py",
+    "phonepilot/graph/visibility.py",
+    "phonepilot/runtime/adb_endpoint.py",
+    "phonepilot/runtime/process_probe.py",
+    "phonepilot/mcp/action_types.py",
+    "phonepilot/data_engine/models.py",
+    "phonepilot/agents/explorer/native_runner.py",
+    "phonepilot/agents/explorer/perception_tools.py",
     "mcp_server/utils/device_utils.py",
-    "packages/artemis-client/src/artemis_client"
+    "packages/phonepilot-client/src/phonepilot_client"
   ],
   "exclude": [".venv/**"]
 }

@@ -26,9 +26,9 @@ import uuid
 from mcp_server.base import mcp
 from mcp_server.notifiers import notify
 from mcp_server.utils import env_utils
-from artemis.config import ExplorerVersion, checker_overrides_for_level
-from artemis.config.runtime import read_ipc_port
-from artemis.runtime import (
+from phonepilot.config import ExplorerVersion, checker_overrides_for_level
+from phonepilot.config.runtime import read_ipc_port
+from phonepilot.runtime import (
     DeviceExecutionLock,
     device_pool,
     ensure_daemon_running,
@@ -113,7 +113,7 @@ def _watch_spawn(
         try:
             notify(
                 conversation_id=conversation_id,
-                message=f"Artemis task '{trace_id}' failed to start: {error_text}",
+                message=f"PhonePilot task '{trace_id}' failed to start: {error_text}",
                 event_type="failed",
                 payload={"trace_id": trace_id, "error": error_text},
             )
@@ -308,8 +308,8 @@ def mobile_run_task(
             trace_store.update_trace_status(trace_id, "failed", error=rejection["error"])
             return {"trace_id": trace_id, **rejection}
 
-    # 3. Dispatch via unified Artemis Daemon scheduler if available (unless standalone forced)
-    if os.environ.get("ARTEMIS_STANDALONE") != "1":
+    # 3. Dispatch via unified PhonePilot Daemon scheduler if available (unless standalone forced)
+    if os.environ.get("PHONEPILOT_STANDALONE") != "1":
         try:
             is_running, base_url = ensure_daemon_running(timeout=2.0, wait_ready=True)
             if is_running:
@@ -328,13 +328,13 @@ def mobile_run_task(
                     base_url=base_url,
                 )
                 if resp and resp.get("status") == "rejected":
-                    rejection_error = resp.get("error") or "Task rejected by Artemis Daemon."
+                    rejection_error = resp.get("error") or "Task rejected by PhonePilot Daemon."
                     trace_store.update_trace_status(trace_id, "failed", error=rejection_error)
                     return {
                         "trace_id": trace_id,
                         "status": "failed",
                         "error": rejection_error,
-                        "message": f"Task rejected by Artemis Daemon: {rejection_error}",
+                        "message": f"Task rejected by PhonePilot Daemon: {rejection_error}",
                     }
                 if resp and resp.get("tasks"):
                     assigned_sid = resp["tasks"][0].get("session_id", trace_id)
@@ -348,7 +348,7 @@ def mobile_run_task(
                         "trace_id": assigned_sid,
                         "status": "running",
                         "message": (
-                            f"Autonomous task '{task_desc}' enqueued via unified Artemis Daemon.\n"
+                            f"Autonomous task '{task_desc}' enqueued via unified PhonePilot Daemon.\n"
                             f"Trace ID: {assigned_sid}\n"
                             f"Model: {canonical_model}\n"
                             f"Live telemetry: streaming to web workspace."
@@ -385,7 +385,7 @@ def mobile_run_task(
                                 "trace_id": trace_id,
                                 "status": "running",
                                 "message": (
-                                    f"Autonomous task '{task_desc}' enqueued via unified Artemis Daemon.\n"
+                                    f"Autonomous task '{task_desc}' enqueued via unified PhonePilot Daemon.\n"
                                     f"Trace ID: {trace_id}\n"
                                     f"Model: {canonical_model}\n"
                                     f"Live telemetry: streaming to web workspace."
@@ -404,7 +404,7 @@ def mobile_run_task(
                         "trace_id": trace_id,
                         "status": "unknown",
                         "message": (
-                            f"Artemis Daemon gave no enqueue confirmation for task "
+                            f"PhonePilot Daemon gave no enqueue confirmation for task "
                             f"'{task_desc}' and the queue could not be inspected. The "
                             f"task may still have been enqueued. Poll "
                             f"mobile_manage_task(action='status', trace_id='{trace_id}') "
@@ -420,8 +420,8 @@ def mobile_run_task(
                 return {
                     "trace_id": trace_id,
                     "status": "failed",
-                    "error": f"Failed to enqueue task '{task_desc}' to running Artemis Daemon scheduler.",
-                    "message": "Task rejected or timed out in Artemis Daemon. Standalone fallback blocked to prevent runner collision.",
+                    "error": f"Failed to enqueue task '{task_desc}' to running PhonePilot Daemon scheduler.",
+                    "message": "Task rejected or timed out in PhonePilot Daemon. Standalone fallback blocked to prevent runner collision.",
                 }
         except Exception as exc:
             logging.getLogger("mcp_server").warning(f"Daemon dispatch failed: {exc}")
@@ -429,7 +429,7 @@ def mobile_run_task(
                 "trace_id": trace_id,
                 "status": "failed",
                 "error": f"Daemon dispatch error: {exc}",
-                "message": "Failed to dispatch task to Artemis Daemon.",
+                "message": "Failed to dispatch task to PhonePilot Daemon.",
             }
 
     # 4. Standalone Fallback: Resolve project root, python executable, and background runner module
@@ -473,16 +473,16 @@ def mobile_run_task(
             cmd.extend(["--explorer-pro-mode", explorer_mode])
 
         env = os.environ.copy()
-        env["ARTEMIS_SESSION_ID"] = trace_id
-        env["ARTEMIS_TASK_INGRESS"] = "mcp"
+        env["PHONEPILOT_SESSION_ID"] = trace_id
+        env["PHONEPILOT_TASK_INGRESS"] = "mcp"
         if device_serial:
             env["ADB_DEVICE_SERIAL"] = device_serial
-            env["ARTEMIS_DEVICE_ID"] = device_serial
+            env["PHONEPILOT_DEVICE_ID"] = device_serial
         env[DeviceExecutionLock.QUEUE_TICKET_ENV] = queue_ticket
         try:
             ipc_port = read_ipc_port()
             if ipc_port:
-                env["ARTEMIS_IPC_PORT"] = str(ipc_port)
+                env["PHONEPILOT_IPC_PORT"] = str(ipc_port)
         except (OSError, ValueError):
             # No readable IPC port file: the runner works without live telemetry.
             pass

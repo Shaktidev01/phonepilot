@@ -22,12 +22,12 @@ from collections.abc import Callable
 
 from langchain_core.tools import BaseTool
 
-from artemis.context import ArtemisContext
+from phonepilot.context import PhonePilotContext
 from third_party.mobile_use.tools.tool_wrapper import CompositeToolWrapper, ToolWrapper
 
 
 def get_tools_from_wrappers(
-    ctx: "ArtemisContext",
+    ctx: "PhonePilotContext",
     wrappers: list[ToolWrapper],
     wrap_tool: Callable[[BaseTool], BaseTool] | None = None,
 ) -> list[BaseTool]:

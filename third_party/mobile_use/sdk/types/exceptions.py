@@ -16,23 +16,23 @@
 # Originally from mobile-use (https://github.com/minitap-ai/mobile-use).
 # See third_party/mobile_use/METADATA for the upstream source and local modifications.
 
-"""Exceptions for the ARTEMIS SDK.
+"""Exceptions for the PhonePilot SDK.
 
-This module defines the exception hierarchy used throughout the Artemis SDK.
+This module defines the exception hierarchy used throughout the PhonePilot SDK.
 """
 
 from typing import Literal
 
 
-class ArtemisError(Exception):
-    """Base exception class for all ARTEMIS SDK exceptions."""
+class PhonePilotError(Exception):
+    """Base exception class for all PhonePilot SDK exceptions."""
 
-    def __init__(self, message="An error occurred in the Artemis SDK"):
+    def __init__(self, message="An error occurred in the PhonePilot SDK"):
         self.message = message
         super().__init__(self.message)
 
 
-class DeviceError(ArtemisError):
+class DeviceError(PhonePilotError):
     """Exception raised for errors related to mobile devices."""
 
     def __init__(self, message="A device-related error occurred"):
@@ -46,27 +46,27 @@ class DeviceNotFoundError(DeviceError):
         super().__init__(message)
 
 
-class ServerError(ArtemisError):
-    """Exception raised for errors related to ARTEMIS servers."""
+class ServerError(PhonePilotError):
+    """Exception raised for errors related to PhonePilot servers."""
 
     def __init__(self, message="A server-related error occurred"):
         super().__init__(message)
 
 
 class ServerStartupError(ServerError):
-    """Exception raised when ARTEMIS servers fail to start."""
+    """Exception raised when PhonePilot servers fail to start."""
 
     def __init__(self, server_name=None, message=None):
         if server_name and not message:
             message = f"Failed to start {server_name}"
         elif not message:
-            message = "Failed to start Artemis servers"
+            message = "Failed to start PhonePilot servers"
         super().__init__(message)
         self.server_name = server_name
 
 
-class AgentError(ArtemisError):
-    """Exception raised for errors related to the ARTEMIS agent."""
+class AgentError(PhonePilotError):
+    """Exception raised for errors related to the PhonePilot agent."""
 
     def __init__(self, message="An agent-related error occurred"):
         super().__init__(message)
@@ -96,7 +96,7 @@ class AgentProfileNotFoundError(AgentTaskRequestError):
 EXECUTABLES = Literal["adb"]
 
 
-class ExecutableNotFoundError(ArtemisError):
+class ExecutableNotFoundError(PhonePilotError):
     """Exception raised when a required executable is not found."""
 
     def __init__(self, executable_name: EXECUTABLES):

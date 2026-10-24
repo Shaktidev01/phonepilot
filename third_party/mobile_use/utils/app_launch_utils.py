@@ -20,17 +20,17 @@
 
 import asyncio
 
-from artemis.context import AppLaunchResult, ArtemisContext
-from artemis.controllers.unified_controller import UnifiedMobileController
-from artemis.data_engine.trace import TraceSpan
-from artemis.utils.app_launch_utils import current_foreground, observe_foreground
+from phonepilot.context import AppLaunchResult, PhonePilotContext
+from phonepilot.controllers.unified_controller import UnifiedMobileController
+from phonepilot.data_engine.trace import TraceSpan
+from phonepilot.utils.app_launch_utils import current_foreground, observe_foreground
 from third_party.mobile_use.utils.logger import get_logger
 
 logger = get_logger(__name__)
 
 
 async def _poll_for_app_ready(
-    ctx: ArtemisContext,
+    ctx: PhonePilotContext,
     app_package: str,
     max_poll_seconds: int = 15,
     poll_interval: float = 1.0,
@@ -88,7 +88,7 @@ async def _poll_for_app_ready(
 
 
 async def launch_app_with_retries(
-    ctx: ArtemisContext,
+    ctx: PhonePilotContext,
     app_package: str,
     max_retries: int = 3,
     max_poll_seconds: int = 15,
@@ -158,7 +158,7 @@ async def launch_app_with_retries(
 
 
 async def _handle_initial_app_launch(
-    ctx: ArtemisContext,
+    ctx: PhonePilotContext,
     locked_app_package: str,
 ) -> AppLaunchResult:
     """Handle initial app launch verification and launching if needed.

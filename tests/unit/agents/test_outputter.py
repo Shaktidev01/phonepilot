@@ -18,10 +18,10 @@ from unittest.mock import AsyncMock, Mock, patch
 from pydantic import BaseModel
 import pytest
 
-from artemis.agents.outputter.outputter import outputter
-from artemis.config import LLM, OutputConfig  # noqa: E402
-from artemis.context import ArtemisContext  # noqa: E402
-from artemis.core.tool_failure import ToolFailure  # noqa: E402
+from phonepilot.agents.outputter.outputter import outputter
+from phonepilot.config import LLM, OutputConfig  # noqa: E402
+from phonepilot.context import PhonePilotContext  # noqa: E402
+from phonepilot.core.tool_failure import ToolFailure  # noqa: E402
 from third_party.mobile_use import testing as agent_fixtures
 from third_party.mobile_use.utils.logger import get_logger  # noqa: E402
 
@@ -80,7 +80,7 @@ _FORMAT_CASES = [
 ]
 
 
-@patch("artemis.agents.outputter.outputter.get_llm")
+@patch("phonepilot.agents.outputter.outputter.get_llm")
 @pytest.mark.asyncio
 @pytest.mark.parametrize("schema, formatted_reply", _FORMAT_CASES)
 async def test_outputter_applies_schema_in_separate_formatting_pass(
@@ -105,7 +105,7 @@ async def test_outputter_applies_schema_in_separate_formatting_pass(
     assert react_answer in format_request
 
 
-@patch("artemis.agents.outputter.outputter.get_llm")
+@patch("phonepilot.agents.outputter.outputter.get_llm")
 @pytest.mark.asyncio
 async def test_outputter_with_history_and_image(mock_get_llm, mock_context):
     """Test outputter with explicit history and image."""
@@ -154,7 +154,7 @@ async def test_outputter_with_history_and_image(mock_get_llm, mock_context):
     assert human_content[1]["image_url"]["url"] == "data:image/jpeg;base64,mock_b64_data"
 
 
-@patch("artemis.agents.outputter.outputter.get_llm")
+@patch("phonepilot.agents.outputter.outputter.get_llm")
 @pytest.mark.asyncio
 async def test_outputter_builds_concise_history(mock_get_llm):
     """Test that the outputter dynamically builds clean Summary ➡️ Action history."""
@@ -166,7 +166,7 @@ async def test_outputter_builds_concise_history(mock_get_llm):
         output_description="Test output",
     )
 
-    ctx = Mock(spec=ArtemisContext)
+    ctx = Mock(spec=PhonePilotContext)
     ctx.llm_config = {
         "planner": LLM(provider="openai", model="gpt-5-nano"),
         "operator": LLM(provider="openai", model="gpt-5-nano"),
@@ -266,8 +266,8 @@ async def test_outputter_builds_concise_history(mock_get_llm):
     assert "*Action*: Tapped 'Search' at None" in human_content_standard
 
 
-@patch("artemis.tools.video_tool.VideoAnalyzer")
-@patch("artemis.agents.outputter.outputter.get_llm")
+@patch("phonepilot.tools.video_tool.VideoAnalyzer")
+@patch("phonepilot.agents.outputter.outputter.get_llm")
 @pytest.mark.asyncio
 async def test_outputter_executes_video_analyzer_tool(
     mock_get_llm, mock_video_analyzer, mock_context, mock_state
@@ -352,7 +352,7 @@ async def test_outputter_executes_video_analyzer_tool(
     assert result == "Video played successfully."
 
 
-@patch("artemis.agents.outputter.outputter.get_llm")
+@patch("phonepilot.agents.outputter.outputter.get_llm")
 @pytest.mark.asyncio
 async def test_outputter_executes_save_note_tool(mock_get_llm, mock_context, mock_state):
     """Test that the outputter ReAct loop can successfully invoke the save_note tool."""
@@ -401,7 +401,7 @@ async def test_outputter_executes_save_note_tool(mock_get_llm, mock_context, moc
     mock_context.data_engine = mock_data_engine
 
     # Patch save_note_content utility to avoid writing to disk
-    with patch("artemis.tools.scratchpad.save_note_content") as mock_save_content:
+    with patch("phonepilot.tools.scratchpad.save_note_content") as mock_save_content:
         result = await outputter(ctx=mock_context, output_config=config, graph_output=mock_state)
         mock_save_content.assert_called_once_with(
             "/tmp/mock_session", "verification_code", "123456"
@@ -431,8 +431,8 @@ def _text_tool(name: str, result):  # noqa: D103
     return StructuredTool.from_function(coroutine=_run, name=name, description=name)
 
 
-@patch("artemis.agents.outputter.outputter.get_read_note_tool_pure")
-@patch("artemis.agents.outputter.outputter.get_llm")
+@patch("phonepilot.agents.outputter.outputter.get_read_note_tool_pure")
+@patch("phonepilot.agents.outputter.outputter.get_llm")
 @pytest.mark.asyncio
 @pytest.mark.parametrize("result, expected_status", _STATUS_CASES)
 async def test_outputter_tool_message_status_is_structural(
@@ -481,7 +481,7 @@ def _recording_tool(name: str, result, events: list, barrier=None):  # noqa: D10
     return StructuredTool.from_function(coroutine=_run, name=name, description=name)
 
 
-@patch("artemis.agents.outputter.outputter.get_llm")
+@patch("phonepilot.agents.outputter.outputter.get_llm")
 @pytest.mark.asyncio
 async def test_outputter_returns_text_for_content_block_replies(
     mock_get_llm, mock_context, mock_state
@@ -504,7 +504,7 @@ async def test_outputter_returns_text_for_content_block_replies(
     assert result == "The order was placed."
 
 
-@patch("artemis.agents.outputter.outputter.get_llm")
+@patch("phonepilot.agents.outputter.outputter.get_llm")
 @pytest.mark.asyncio
 async def test_outputter_nudges_once_after_empty_reply(mock_get_llm, mock_context, mock_state):
     from langchain_core.messages import AIMessage, HumanMessage
@@ -523,7 +523,7 @@ async def test_outputter_nudges_once_after_empty_reply(mock_get_llm, mock_contex
     assert not any(isinstance(m, AIMessage) and not m.content for m in sent)
 
 
-@patch("artemis.agents.outputter.outputter.get_llm")
+@patch("phonepilot.agents.outputter.outputter.get_llm")
 @pytest.mark.asyncio
 async def test_outputter_nudges_only_once(mock_get_llm, mock_context, mock_state):
     from langchain_core.messages import AIMessage
@@ -539,9 +539,9 @@ async def test_outputter_nudges_only_once(mock_get_llm, mock_context, mock_state
     assert result.startswith("Error: Outputter failed")
 
 
-@patch("artemis.agents.outputter.outputter.MAX_TURNS", 2)
-@patch("artemis.agents.outputter.outputter.get_read_note_tool_pure")
-@patch("artemis.agents.outputter.outputter.get_llm")
+@patch("phonepilot.agents.outputter.outputter.MAX_TURNS", 2)
+@patch("phonepilot.agents.outputter.outputter.get_read_note_tool_pure")
+@patch("phonepilot.agents.outputter.outputter.get_llm")
 @pytest.mark.asyncio
 async def test_outputter_final_turn_runs_no_tools_and_returns_text(
     mock_get_llm, mock_get_read_note, mock_context, mock_state
@@ -568,8 +568,8 @@ async def test_outputter_final_turn_runs_no_tools_and_returns_text(
     )
 
 
-@patch("artemis.agents.outputter.outputter.MAX_TURNS", 2)
-@patch("artemis.agents.outputter.outputter.get_llm")
+@patch("phonepilot.agents.outputter.outputter.MAX_TURNS", 2)
+@patch("phonepilot.agents.outputter.outputter.get_llm")
 @pytest.mark.asyncio
 async def test_outputter_falls_back_to_saved_report(
     mock_get_llm, mock_context, mock_state, tmp_path
@@ -597,7 +597,7 @@ async def test_outputter_falls_back_to_saved_report(
     assert result == report
 
 
-@patch("artemis.agents.outputter.outputter.get_llm")
+@patch("phonepilot.agents.outputter.outputter.get_llm")
 @pytest.mark.asyncio
 async def test_outputter_formatting_pass_sees_saved_report(
     mock_get_llm, mock_context, mock_state, tmp_path
@@ -628,9 +628,9 @@ async def test_outputter_formatting_pass_sees_saved_report(
     assert mock_state.initial_goal in format_messages[-1].content
 
 
-@patch("artemis.agents.outputter.outputter.get_save_note_tool_pure")
-@patch("artemis.agents.outputter.outputter.get_history_tools")
-@patch("artemis.agents.outputter.outputter.get_llm")
+@patch("phonepilot.agents.outputter.outputter.get_save_note_tool_pure")
+@patch("phonepilot.agents.outputter.outputter.get_history_tools")
+@patch("phonepilot.agents.outputter.outputter.get_llm")
 @pytest.mark.asyncio
 async def test_outputter_runs_reads_concurrently_and_writes_in_order(
     mock_get_llm, mock_history_tools, mock_get_save_note, mock_context, mock_state
@@ -663,8 +663,8 @@ async def test_outputter_runs_reads_concurrently_and_writes_in_order(
     assert [m.tool_call_id for m in sent if isinstance(m, ToolMessage)] == ["a", "b", "c", "d"]
 
 
-@patch("artemis.agents.outputter.outputter.get_history_tools")
-@patch("artemis.agents.outputter.outputter.get_llm")
+@patch("phonepilot.agents.outputter.outputter.get_history_tools")
+@patch("phonepilot.agents.outputter.outputter.get_llm")
 @pytest.mark.asyncio
 async def test_outputter_puts_image_messages_after_all_tool_results(
     mock_get_llm, mock_history_tools, mock_context, mock_state
@@ -708,7 +708,7 @@ _DEGRADE_CASES = [
 ]
 
 
-@patch("artemis.agents.outputter.outputter.get_llm")
+@patch("phonepilot.agents.outputter.outputter.get_llm")
 @pytest.mark.asyncio
 @pytest.mark.parametrize("answer, expected", _DEGRADE_CASES)
 async def test_outputter_formatting_failure_degrades(
@@ -726,7 +726,7 @@ async def test_outputter_formatting_failure_degrades(
     assert result == expected
 
 
-@patch("artemis.agents.outputter.outputter.get_llm")
+@patch("phonepilot.agents.outputter.outputter.get_llm")
 @pytest.mark.asyncio
 async def test_outputter_shows_target_schema_while_investigating(
     mock_get_llm, mock_context, mock_state

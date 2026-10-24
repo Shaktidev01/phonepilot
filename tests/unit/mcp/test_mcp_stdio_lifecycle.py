@@ -29,8 +29,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from artemis.runtime.awake_lease import ScreenAwakeLease
-from artemis.runtime.awake_service import _run_awake_adb_command
+from phonepilot.runtime.awake_lease import ScreenAwakeLease
+from phonepilot.runtime.awake_service import _run_awake_adb_command
 from third_party.mobile_use.clients import ui_automator_client
 from third_party.mobile_use.utils.logger import get_logger
 from mcp_server.utils import device_utils, env_utils
@@ -159,7 +159,7 @@ def test_mcp_stdio_handshake_immediate_input():
 
 def test_awake_service_adb_command_isolates_stdin():
     """Verify _run_awake_adb_command always sets stdin=subprocess.DEVNULL."""
-    with patch("artemis.runtime.awake_service.subprocess.run") as mock_run:
+    with patch("phonepilot.runtime.awake_service.subprocess.run") as mock_run:
         mock_run.return_value = MagicMock(returncode=0, stdout="ok", stderr="")
         _run_awake_adb_command("test-dev-1", ["shell", "date"], "test command")
 
@@ -173,7 +173,7 @@ def test_awake_service_adb_command_isolates_stdin():
 def test_awake_lease_run_isolates_stdin():
     """Verify ScreenAwakeLease._run always sets stdin=subprocess.DEVNULL."""
     lease = ScreenAwakeLease("test-dev-1")
-    with patch("artemis.runtime.awake_lease.subprocess.run") as mock_run:
+    with patch("phonepilot.runtime.awake_lease.subprocess.run") as mock_run:
         mock_run.return_value = MagicMock(returncode=0, stdout="ok", stderr="")
         lease._run(["shell", "date"], "test lease command")
 

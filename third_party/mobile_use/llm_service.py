@@ -22,8 +22,8 @@
 a hard timeout. ``FallbackRunner`` retries a failed call on a fallback model.
 ``GetLLM`` is the type of ``get_llm``.
 
-Artemis passes in its own behaviour (pause detection, error classification,
-telemetry); this module does not import artemis at runtime.
+PhonePilot passes in its own behaviour (pause detection, error classification,
+telemetry); this module does not import phonepilot at runtime.
 """
 
 from __future__ import annotations
@@ -37,8 +37,8 @@ from typing import TYPE_CHECKING, Any, Literal, Protocol, overload
 if TYPE_CHECKING:
     from langchain_core.language_models.chat_models import BaseChatModel
 
-    from artemis.config import AgentNodeWithFallback, LLMUtilsNode, LLMUtilsNodeWithFallback
-    from artemis.context import ArtemisContext
+    from phonepilot.config import AgentNodeWithFallback, LLMUtilsNode, LLMUtilsNodeWithFallback
+    from phonepilot.context import PhonePilotContext
 
 _logger = logging.getLogger(__name__)
 
@@ -164,7 +164,7 @@ class GetLLM(Protocol):
     @overload
     def __call__(
         self,
-        ctx: ArtemisContext,
+        ctx: PhonePilotContext,
         name: AgentNodeWithFallback,
         *,
         use_fallback: bool = False,
@@ -174,7 +174,7 @@ class GetLLM(Protocol):
     @overload
     def __call__(
         self,
-        ctx: ArtemisContext,
+        ctx: PhonePilotContext,
         name: LLMUtilsNode,
         *,
         is_utils: Literal[True],
@@ -184,7 +184,7 @@ class GetLLM(Protocol):
     @overload
     def __call__(
         self,
-        ctx: ArtemisContext,
+        ctx: PhonePilotContext,
         name: LLMUtilsNodeWithFallback,
         *,
         is_utils: Literal[True],

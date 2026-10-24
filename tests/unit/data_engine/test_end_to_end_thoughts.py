@@ -19,10 +19,10 @@ from unittest.mock import MagicMock
 from uuid import uuid4
 
 from langchain_core.messages import AIMessage, HumanMessage
-from artemis.context import ArtemisContext
-from artemis.data_engine.engine import DataEngine
-from artemis.data_engine.trace import CURRENT_TRACE_ID, DataEngineCallbackHandler
-from artemis.utils.task_tree import build_plan_and_history
+from phonepilot.context import PhonePilotContext
+from phonepilot.data_engine.engine import DataEngine
+from phonepilot.data_engine.trace import CURRENT_TRACE_ID, DataEngineCallbackHandler
+from phonepilot.utils.task_tree import build_plan_and_history
 import pytest
 
 
@@ -36,7 +36,7 @@ def temp_workspace():
 @pytest.mark.asyncio
 async def test_end_to_end_thoughts_non_duplication(temp_workspace):
     # 1. Setup mock context and DataEngine
-    mock_ctx = MagicMock(spec=ArtemisContext)
+    mock_ctx = MagicMock(spec=PhonePilotContext)
     mock_execution_setup = MagicMock()
     mock_execution_setup.traces_path = str(temp_workspace / "traces")
     mock_ctx.execution_setup = mock_execution_setup

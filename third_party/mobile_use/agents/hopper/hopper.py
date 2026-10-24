@@ -20,11 +20,11 @@ from pathlib import Path
 
 from jinja2 import Template
 from langchain_core.messages import HumanMessage, SystemMessage
-from artemis.context import ArtemisContext
-from artemis.data_engine.trace import trace
-from artemis.services.llm import get_llm, invoke_llm_with_timeout_message, with_fallback
+from phonepilot.context import PhonePilotContext
+from phonepilot.data_engine.trace import trace
+from phonepilot.services.llm import get_llm, invoke_llm_with_timeout_message, with_fallback
 from pydantic import BaseModel, Field
-from artemis.utils.cython_compat import CyFunctionDetector
+from phonepilot.utils.cython_compat import CyFunctionDetector
 from third_party.mobile_use.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -42,7 +42,7 @@ class HopperOutput(BaseModel):
 
 @trace(type="agent", name="hopper")
 async def hopper(
-    ctx: ArtemisContext,
+    ctx: PhonePilotContext,
     request: str,
     data: str,
     use_fallback: bool = True,

@@ -20,9 +20,9 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from artemis.context import ArtemisContext
-from artemis.core.tool_failure import ToolFailure
-from artemis.tools.committee_tool import get_ask_committee_tool
+from phonepilot.context import PhonePilotContext
+from phonepilot.core.tool_failure import ToolFailure
+from phonepilot.tools.committee_tool import get_ask_committee_tool
 
 
 class TestCommitteeTool(unittest.IsolatedAsyncioTestCase):
@@ -46,7 +46,7 @@ class TestCommitteeTool(unittest.IsolatedAsyncioTestCase):
                 encoding="utf-8",
             )
             # Mock context and state
-            mock_ctx = MagicMock(spec=ArtemisContext)
+            mock_ctx = MagicMock(spec=PhonePilotContext)
             mock_ctx.device = MagicMock()
             mock_ctx.device.device_width = 1080
             mock_ctx.device.device_height = 2400
@@ -127,18 +127,18 @@ class TestCommitteeTool(unittest.IsolatedAsyncioTestCase):
             # Patch get_llm and the actual tool functions to avoid real calls
             with (
                 patch(
-                    "artemis.tools.committee_tool.get_llm",
+                    "phonepilot.tools.committee_tool.get_llm",
                     side_effect=mock_get_llm,
                 ),
                 patch(
-                    "artemis.tools.committee_tool.trace_langchain_tool",
+                    "phonepilot.tools.committee_tool.trace_langchain_tool",
                     side_effect=lambda t, ctx: t,
                 ),
             ):
                 tool = get_ask_committee_tool(mock_ctx)
 
                 # Invoke tool with avatar_directive
-                from artemis.data_engine.trace import CURRENT_TRACE_ID
+                from phonepilot.data_engine.trace import CURRENT_TRACE_ID
 
                 token = CURRENT_TRACE_ID.set("test_trace_id")
                 try:
@@ -172,9 +172,9 @@ class TestCommitteeTool(unittest.IsolatedAsyncioTestCase):
             shutil.rmtree(temp_dir)
 
     def test_ask_committee_tool_subclass(self):
-        """Verify AskCommitteeTool is a subclass of ArtemisTool."""
-        from artemis.tools.base import ArtemisTool
-        from artemis.tools.committee_tool import (
+        """Verify AskCommitteeTool is a subclass of PhonePilotTool."""
+        from phonepilot.tools.base import PhonePilotTool
+        from phonepilot.tools.committee_tool import (
             AskCommittee,
             AskCommitteeArgs,
             AskCommitteeTool,
@@ -184,10 +184,10 @@ class TestCommitteeTool(unittest.IsolatedAsyncioTestCase):
             get_ask_committee_tool,
         )
 
-        self.assertTrue(issubclass(AskCommitteeTool, ArtemisTool))
-        self.assertTrue(issubclass(AskCommittee, ArtemisTool))
-        self.assertTrue(issubclass(AskCommitteeToolAlias, ArtemisTool))
-        self.assertIsInstance(ask_committee, ArtemisTool)
+        self.assertTrue(issubclass(AskCommitteeTool, PhonePilotTool))
+        self.assertTrue(issubclass(AskCommittee, PhonePilotTool))
+        self.assertTrue(issubclass(AskCommitteeToolAlias, PhonePilotTool))
+        self.assertIsInstance(ask_committee, PhonePilotTool)
         self.assertIsInstance(ask_committee, AskCommitteeTool)
 
         self.assertEqual(ask_committee.name, "ask_committee")
@@ -205,10 +205,10 @@ class TestCommitteeTool(unittest.IsolatedAsyncioTestCase):
 
     async def test_ask_committee_no_ctx(self):
         """Verify executing without ctx returns an error message."""
-        from artemis.tools.committee_tool import ask_committee
+        from phonepilot.tools.committee_tool import ask_committee
 
         result = await ask_committee.execute(avatar_directive="Test")
-        self.assertEqual(result, "Error: ArtemisContext is required for ask_committee.")
+        self.assertEqual(result, "Error: PhonePilotContext is required for ask_committee.")
 
 
 if __name__ == "__main__":
@@ -236,7 +236,7 @@ async def _run_committee_with_history_tool(tmp_path, history_tool):
     screenshot = tmp_path / "shot.jpg"
     screenshot.write_bytes(b"fake image bytes")
 
-    ctx = MagicMock(spec=ArtemisContext)
+    ctx = MagicMock(spec=PhonePilotContext)
     ctx.device = MagicMock()
     ctx.device.device_width = 1080
     ctx.device.device_height = 2400
@@ -290,14 +290,14 @@ async def _run_committee_with_history_tool(tmp_path, history_tool):
 
     with (
         patch(
-            "artemis.tools.committee_tool.get_llm",
+            "phonepilot.tools.committee_tool.get_llm",
             side_effect=lambda ctx, name, temperature=None: members[name],
         ),
-        patch("artemis.tools.committee_tool.get_history_tools", return_value=[history_tool]),
-        patch("artemis.tools.committee_tool.trace_langchain_tool", side_effect=lambda t, ctx: t),
+        patch("phonepilot.tools.committee_tool.get_history_tools", return_value=[history_tool]),
+        patch("phonepilot.tools.committee_tool.trace_langchain_tool", side_effect=lambda t, ctx: t),
     ):
         tool = get_ask_committee_tool(ctx)
-        from artemis.data_engine.trace import CURRENT_TRACE_ID
+        from phonepilot.data_engine.trace import CURRENT_TRACE_ID
 
         token = CURRENT_TRACE_ID.set("test_trace_id")
         try:

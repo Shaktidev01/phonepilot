@@ -52,7 +52,7 @@ async def test_run_task_applies_pro_tuning_to_agent_config(
     from types import SimpleNamespace
     from unittest.mock import patch
 
-    from artemis.runtime import trace_store
+    from phonepilot.runtime import trace_store
     from mcp_server.background import task_runner as bg
 
     monkeypatch.setattr(trace_store, "TRACES_DIR", str(tmp_path))
@@ -80,10 +80,10 @@ async def test_run_task_applies_pro_tuning_to_agent_config(
     monkeypatch.setattr(bg, "notify", MagicMock())
 
     with (
-        patch("artemis.sdk.builders.Builders", fake_builders),
-        patch("artemis.sdk.Agent", return_value=fake_agent),
-        patch("artemis.sdk.types.AgentProfile", MagicMock()),
-        patch("artemis.config.initialize_llm_config", return_value=MagicMock()),
+        patch("phonepilot.sdk.builders.Builders", fake_builders),
+        patch("phonepilot.sdk.Agent", return_value=fake_agent),
+        patch("phonepilot.sdk.types.AgentProfile", MagicMock()),
+        patch("phonepilot.config.initialize_llm_config", return_value=MagicMock()),
     ):
         await bg.run_task(
             trace_id=trace_id,

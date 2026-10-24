@@ -15,10 +15,10 @@
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-from artemis.context import ArtemisContext
-from artemis.graph.state import State
-from artemis.tools.base import ArtemisTool
-from artemis.tools.scratchpad import (
+from phonepilot.context import PhonePilotContext
+from phonepilot.graph.state import State
+from phonepilot.tools.base import PhonePilotTool
+from phonepilot.tools.scratchpad import (
     SaveNote,
     SaveNoteArgs,
     SaveNoteTool,
@@ -33,17 +33,17 @@ import pytest
 
 @pytest.fixture
 def mock_ctx(tmp_path):
-    ctx = MagicMock(spec=ArtemisContext)
+    ctx = MagicMock(spec=PhonePilotContext)
     ctx.data_engine = MagicMock()
     ctx.data_engine.base_dir = str(tmp_path)
     return ctx
 
 
 def test_save_note_tool_subclass():
-    """Verify SaveNoteTool is a subclass of ArtemisTool."""
-    assert issubclass(SaveNoteTool, ArtemisTool)
-    assert issubclass(SaveNote, ArtemisTool)
-    assert isinstance(save_note, ArtemisTool)
+    """Verify SaveNoteTool is a subclass of PhonePilotTool."""
+    assert issubclass(SaveNoteTool, PhonePilotTool)
+    assert issubclass(SaveNote, PhonePilotTool)
+    assert isinstance(save_note, PhonePilotTool)
     assert isinstance(save_note, SaveNoteTool)
 
     assert save_note.name == "save_note"
@@ -67,13 +67,13 @@ async def test_save_note_direct_execution_success(mock_ctx, tmp_path):
     result = await save_note.execute(
         ctx=mock_ctx,
         key="test_note",
-        content="Hello Artemis memory",
+        content="Hello PhonePilot memory",
     )
     assert result == "Saved note 'test_note'."
 
     note_path = Path(tmp_path) / "notes" / "test_note.md"
     assert note_path.exists()
-    assert note_path.read_text(encoding="utf-8") == "Hello Artemis memory"
+    assert note_path.read_text(encoding="utf-8") == "Hello PhonePilot memory"
 
 
 @pytest.mark.asyncio
@@ -118,7 +118,7 @@ async def test_save_note_with_state_tool_message(mock_ctx, tmp_path):
 async def test_save_note_execution_failure(mock_ctx):
     """Verify error handling when saving note fails."""
     with patch(
-        "artemis.tools.scratchpad.save_note_content",
+        "phonepilot.tools.scratchpad.save_note_content",
         side_effect=PermissionError("Permission denied"),
     ):
         result = await save_note.execute(

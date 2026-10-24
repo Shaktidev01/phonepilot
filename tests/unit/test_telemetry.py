@@ -16,8 +16,8 @@
 
 import pytest
 from pathlib import Path
-from artemis.telemetry.models import SpanType
-from artemis.telemetry.tracer import TelemetryTracer
+from phonepilot.telemetry.models import SpanType
+from phonepilot.telemetry.tracer import TelemetryTracer
 
 
 @pytest.mark.asyncio

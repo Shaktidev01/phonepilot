@@ -22,8 +22,8 @@ import copy
 from typing import Any, ClassVar, Self
 
 from langchain_core.callbacks.base import Callbacks
-from artemis.config import get_default_llm_config
-from artemis.sdk.constants import DEFAULT_PROFILE_NAME
+from phonepilot.config import get_default_llm_config
+from phonepilot.sdk.constants import DEFAULT_PROFILE_NAME
 from third_party.mobile_use.context import DevicePlatform
 from third_party.mobile_use.sdk.types.agent import AgentConfigBase, ServerConfig
 from third_party.mobile_use.sdk.types.task import AgentProfile, TaskRequestCommon
@@ -66,7 +66,7 @@ class AgentConfigBuilderBase:
         self._cloud_mobile_id_or_ref: str | None = None
 
     def add_profile(self, profile: AgentProfile, validate: bool = True) -> Self:
-        """Add an agent profile to the ARTEMIS agent.
+        """Add an agent profile to the PhonePilot agent.
 
         Args:
             profile: The agent profile to add
@@ -81,7 +81,7 @@ class AgentConfigBuilderBase:
         profiles: list[AgentProfile],
         validate: bool = True,
     ) -> Self:
-        """Add multiple agent profiles to the ARTEMIS agent.
+        """Add multiple agent profiles to the PhonePilot agent.
 
         Args:
             profiles: List of agent profiles to add
@@ -104,7 +104,7 @@ class AgentConfigBuilderBase:
         platform_or_device_id: DevicePlatform | str,
         device_id: str | None = None,
     ) -> Self:
-        """Configure the ARTEMIS agent for a specific device.
+        """Configure the PhonePilot agent for a specific device.
 
         Supports both:
             builder.for_device(DevicePlatform.ANDROID, "emulator-5554")

@@ -12,22 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Unit tests for the readiness core shared by ``artemis doctor`` and ``mobile_diagnose``."""
+"""Unit tests for the readiness core shared by ``phonepilot doctor`` and ``mobile_diagnose``."""
 
 import asyncio
 import time
 from unittest.mock import AsyncMock
 
-from artemis.core.diagnostics import readiness
-from artemis.core.diagnostics.probes.host_probe import IntegrationHostProbe
-from artemis.core.diagnostics.readiness import (
+from phonepilot.core.diagnostics import readiness
+from phonepilot.core.diagnostics.probes.host_probe import IntegrationHostProbe
+from phonepilot.core.diagnostics.readiness import (
     CHECK_ORDER,
     adb_keys_corrupted,
     base_verdict,
     collect_readiness,
     sort_by_fix_order,
 )
-from artemis.core.diagnostics.schema import (
+from phonepilot.core.diagnostics.schema import (
     ProbeCategory,
     ProbeResult,
     ProbeStatus,

@@ -18,20 +18,20 @@
 
 """Device-control facade base: the upstream ``UnifiedMobileController`` API.
 
-Artemis extends it as ``artemis.controllers.unified_controller.UnifiedMobileController``
+PhonePilot extends it as ``phonepilot.controllers.unified_controller.UnifiedMobileController``
 with scrcpy video recording and timeline segment extraction.
 """
 
 from typing import Any
 
-from artemis.context import ArtemisContext
-from artemis.controllers.device_controller import ScreenDataResponse
-from artemis.drivers.base import BaseDeviceDriver
+from phonepilot.context import PhonePilotContext
+from phonepilot.controllers.device_controller import ScreenDataResponse
+from phonepilot.drivers.base import BaseDeviceDriver
 from third_party.mobile_use.controllers.types import ElementQuery, TapOutput
 
 
 class UnifiedMobileControllerBase:
-    def __init__(self, ctx: ArtemisContext, driver: BaseDeviceDriver):
+    def __init__(self, ctx: PhonePilotContext, driver: BaseDeviceDriver):
         self.ctx = ctx
         self._driver: BaseDeviceDriver = driver
 

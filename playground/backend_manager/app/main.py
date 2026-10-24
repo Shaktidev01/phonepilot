@@ -26,7 +26,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
 )
-logger = logging.getLogger("artemis.backend")
+logger = logging.getLogger("phonepilot.backend")
 
 
 @asynccontextmanager
@@ -41,7 +41,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title=settings.APP_NAME,
-    description="Backend Management & Orchestration Service for Artemis on Container OS",
+    description="Backend Management & Orchestration Service for PhonePilot on Container OS",
     version="1.0.0",
     lifespan=lifespan,
 )

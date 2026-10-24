@@ -30,7 +30,7 @@ async def create_new_session(
     payload: CreateSessionRequest,
     user_id: str = Depends(get_current_user),
 ):
-    """Create a new session, provision Cuttlefish AVD and Artemis container, and establish ADB link."""
+    """Create a new session, provision Cuttlefish AVD and PhonePilot container, and establish ADB link."""
     try:
         session = await session_manager.create_session(user_id=user_id, request=payload)
         return session
@@ -82,7 +82,7 @@ async def terminate_session(
     session_id: str,
     user_id: str = Depends(get_current_user),
 ):
-    """Terminate the session, destroy Artemis container and Cuttlefish AVD."""
+    """Terminate the session, destroy PhonePilot container and Cuttlefish AVD."""
     success = await session_manager.terminate_session(
         session_id, user_id=user_id, reason="User terminated"
     )

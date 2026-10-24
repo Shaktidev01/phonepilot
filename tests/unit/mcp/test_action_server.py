@@ -16,16 +16,16 @@
 
 import pytest
 
-from artemis.mcp.action_manifest import (
+from phonepilot.mcp.action_manifest import (
     ActuatorContractError,
     DEVICE_ACTIONS,
     INTERNAL_ACTIONS,
     REQUIRED_ACTIONS,
     ExtensionTool,
 )
-from artemis.mcp.action_server import build_action_server
-from artemis.mcp.action_session import ActionSession
-from artemis.mcp.actuators import MockActuator
+from phonepilot.mcp.action_server import build_action_server
+from phonepilot.mcp.action_session import ActionSession
+from phonepilot.mcp.actuators import MockActuator
 
 pytestmark = pytest.mark.asyncio
 

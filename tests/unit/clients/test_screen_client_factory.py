@@ -6,8 +6,8 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from artemis.clients.accessibility_client import AccessibilityClient, HelperUnavailable
-from artemis.clients.screen_client_factory import (
+from phonepilot.clients.accessibility_client import AccessibilityClient, HelperUnavailable
+from phonepilot.clients.screen_client_factory import (
     DeviceOfflineError,
     FallbackScreenClient,
     HierarchyBackend,
@@ -17,7 +17,7 @@ from artemis.clients.screen_client_factory import (
     hierarchy_backend_summary,
     resolve_backend,
 )
-from artemis.config.constants import ENV_ARTEMIS_HIERARCHY_BACKEND
+from phonepilot.config.constants import ENV_PHONEPILOT_HIERARCHY_BACKEND
 from third_party.mobile_use.clients.ui_automator_client import UIAutomatorClient
 
 
@@ -27,13 +27,13 @@ from third_party.mobile_use.clients.ui_automator_client import UIAutomatorClient
 
 
 def test_resolve_backend_prefers_explicit_then_env_then_settings(monkeypatch):
-    monkeypatch.delenv(ENV_ARTEMIS_HIERARCHY_BACKEND, raising=False)
-    from artemis.config import settings
+    monkeypatch.delenv(ENV_PHONEPILOT_HIERARCHY_BACKEND, raising=False)
+    from phonepilot.config import settings
 
-    monkeypatch.setattr(settings, "ARTEMIS_HIERARCHY_BACKEND", "uiautomator", raising=False)
+    monkeypatch.setattr(settings, "PHONEPILOT_HIERARCHY_BACKEND", "uiautomator", raising=False)
     assert resolve_backend() is HierarchyBackend.UIAUTOMATOR
 
-    monkeypatch.setenv(ENV_ARTEMIS_HIERARCHY_BACKEND, "Helper")
+    monkeypatch.setenv(ENV_PHONEPILOT_HIERARCHY_BACKEND, "Helper")
     assert resolve_backend() is HierarchyBackend.HELPER
 
     assert resolve_backend("auto") is HierarchyBackend.AUTO
@@ -41,7 +41,7 @@ def test_resolve_backend_prefers_explicit_then_env_then_settings(monkeypatch):
 
 
 def test_resolve_backend_unknown_value_falls_back_to_auto(monkeypatch):
-    monkeypatch.setenv(ENV_ARTEMIS_HIERARCHY_BACKEND, "maestro")
+    monkeypatch.setenv(ENV_PHONEPILOT_HIERARCHY_BACKEND, "maestro")
     assert resolve_backend() is HierarchyBackend.AUTO
 
 
@@ -189,7 +189,7 @@ def test_backend_history_and_listeners_track_every_switch(composite):
     summary = hierarchy_backend_summary(client)
     assert summary["backend"] == "helper" and len(summary["switches"]) == 2
     sentence = hierarchy_backend_sentence(client, relative_time=lambda t: "T+00:10")
-    assert sentence.startswith("UI hierarchy source: the Artemis accessibility helper")
+    assert sentence.startswith("UI hierarchy source: the PhonePilot accessibility helper")
     assert "switched to UIAutomator2 at T+00:10 because RuntimeError: tunnel gone" in sentence
 
 

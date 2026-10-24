@@ -2,7 +2,7 @@
 """Run a deterministic, real-device acceptance test for the video analyzer.
 
 The script intentionally bypasses the autonomous planner. It uses the same
-ARTEMIS device driver, recorder, controller, configured video model, and
+PhonePilot device driver, recorder, controller, configured video model, and
 persistent blackboard as production, while keeping the UI ground truth fully
 deterministic and independently observable through UIAutomator.
 
@@ -30,13 +30,13 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from artemis.agents.video_analyzer.video_analyzer import VideoAnalyzer
-from artemis.config import initialize_llm_config, settings
-from artemis.context import ArtemisContext, DeviceContext, DevicePlatform, ExecutionSetup
-from artemis.controllers.controller_factory import get_controller
-from artemis.runtime import DeviceExecutionLock
-from artemis.sdk.builders import Builders
-from artemis.sdk.types import AgentProfile
+from phonepilot.agents.video_analyzer.video_analyzer import VideoAnalyzer
+from phonepilot.config import initialize_llm_config, settings
+from phonepilot.context import PhonePilotContext, DeviceContext, DevicePlatform, ExecutionSetup
+from phonepilot.controllers.controller_factory import get_controller
+from phonepilot.runtime import DeviceExecutionLock
+from phonepilot.sdk.builders import Builders
+from phonepilot.sdk.types import AgentProfile
 from third_party.mobile_use.clients.ui_automator_client import UIAutomatorClient
 
 
@@ -351,7 +351,7 @@ async def run(args: argparse.Namespace) -> dict[str, Any]:
     device = adb_client.device(serial=args.device_id)
     width, height = await asyncio.to_thread(device.window_size)
     ui_client = UIAutomatorClient(device_id=args.device_id)
-    ctx = ArtemisContext(
+    ctx = PhonePilotContext(
         device=DeviceContext(
             host_platform="WINDOWS" if os.name == "nt" else "LINUX",
             mobile_platform=DevicePlatform.ANDROID,

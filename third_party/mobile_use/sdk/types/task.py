@@ -16,25 +16,25 @@
 # Originally from mobile-use (https://github.com/minitap-ai/mobile-use).
 # See third_party/mobile_use/METADATA for the upstream source and local modifications.
 
-"""Task-related type definitions for the ARTEMIS SDK."""
+"""Task-related type definitions for the PhonePilot SDK."""
 
 from collections.abc import Callable, Coroutine
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Generic, Literal, TypeVar, overload
 
-from artemis.config import LLMConfig, get_default_llm_config
-from artemis.constants import RECURSION_LIMIT
-from artemis.context import DeviceContext
-from artemis.sdk.utils import load_llm_config_override
+from phonepilot.config import LLMConfig, get_default_llm_config
+from phonepilot.constants import RECURSION_LIMIT
+from phonepilot.context import DeviceContext
+from phonepilot.sdk.utils import load_llm_config_override
 from pydantic import BaseModel, Field
-from artemis.utils.cython_compat import CyFunctionDetector
+from phonepilot.utils.cython_compat import CyFunctionDetector
 
 TaskRunStatus = Literal["pending", "running", "completed", "failed", "cancelled"]
 
 
 class AgentProfile(BaseModel):
-    """Represents a ARTEMIS agent profile.
+    """Represents a PhonePilot agent profile.
 
     Attributes:
         name: Name of the agent - used to reference the agent when running

@@ -16,8 +16,8 @@ import asyncio
 from collections.abc import Callable
 from typing import Any
 
-from artemis.config import PAUSE_FILE
-from artemis.runtime.process_probe import pid_is_alive
+from phonepilot.config import PAUSE_FILE
+from phonepilot.runtime.process_probe import pid_is_alive
 
 
 class ServerState:

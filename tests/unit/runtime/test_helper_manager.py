@@ -13,8 +13,8 @@ import subprocess
 
 import pytest
 
-from artemis.runtime import helper_manager as hm
-from artemis.runtime.helper_manager import (
+from phonepilot.runtime import helper_manager as hm
+from phonepilot.runtime.helper_manager import (
     DEVICE_PORT,
     SERVICE_NAME,
     AccessibilityHelperManager,
@@ -619,7 +619,7 @@ def test_old_protocol_blocks_a_lazy_attach_without_installing(env):
 def test_auto_install_off_never_installs(env):
     adb, _, manager = env
     manager.auto_install_switch["install"] = False
-    with pytest.raises(HelperUnavailable, match="artemis helper install"):
+    with pytest.raises(HelperUnavailable, match="phonepilot helper install"):
         manager.attach(SERIAL)
     assert not _calls(adb, ["-s", SERIAL, "install"])
 

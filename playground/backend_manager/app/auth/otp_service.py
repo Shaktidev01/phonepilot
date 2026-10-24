@@ -17,7 +17,7 @@ import logging
 import secrets
 from app.config import settings
 
-logger = logging.getLogger("artemis.otp")
+logger = logging.getLogger("phonepilot.otp")
 
 
 class OTPService:

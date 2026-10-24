@@ -18,16 +18,16 @@ from types import SimpleNamespace
 
 import pytest
 
-from artemis.runtime.device_lock import DeviceExecutionLock
-from artemis.runtime.device_pool import DevicePool, DeviceStatus
+from phonepilot.runtime.device_lock import DeviceExecutionLock
+from phonepilot.runtime.device_pool import DevicePool, DeviceStatus
 
-device_pool_module = importlib.import_module("artemis.runtime.device_pool")
+device_pool_module = importlib.import_module("phonepilot.runtime.device_pool")
 
 
 @pytest.fixture(autouse=True)
 def isolated_lock_directory(tmp_path, monkeypatch):
     monkeypatch.setattr(
-        "artemis.runtime.device_lock.get_temp_dir",
+        "phonepilot.runtime.device_lock.get_temp_dir",
         lambda _name: tmp_path,
     )
 

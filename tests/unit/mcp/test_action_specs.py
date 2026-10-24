@@ -30,26 +30,26 @@ from pathlib import Path
 from langchain_core.utils.function_calling import convert_to_openai_tool
 import pytest
 
-from artemis.agents.operator.prompts import (
+from phonepilot.agents.operator.prompts import (
     _PHYSICAL_ACTIONS_ORDER,
     _TURN_ENDING_ORDER,
     OPERATOR_PROMPT_TOOLSET,
 )
-from artemis.agents.validator.tool_declarations import VALIDATOR_TOOLS_DECLARATION
-from artemis.mcp.action_manifest import (
+from phonepilot.agents.validator.tool_declarations import VALIDATOR_TOOLS_DECLARATION
+from phonepilot.mcp.action_manifest import (
     INTERNAL_ACTIONS,
     OPTIONAL_ACTIONS,
     REQUIRED_ACTIONS,
 )
-from artemis.mcp.action_names import OPERATOR_ACTION_TO_CANONICAL
-from artemis.mcp.action_specs import (
+from phonepilot.mcp.action_names import OPERATOR_ACTION_TO_CANONICAL
+from phonepilot.mcp.action_specs import (
     ACTION_SPECS,
     OPERATOR_SHELL_ORDER,
     operator_shell_tool,
     tool_declaration,
     wire_dialects,
 )
-from artemis.mcp.actuators.base import Actuator
+from phonepilot.mcp.actuators.base import Actuator
 
 FIXTURES = Path(__file__).resolve().parents[2] / "fixtures" / "action_surfaces"
 
@@ -96,8 +96,8 @@ def test_tool_declarations_match_fixture():
 
 @pytest.mark.asyncio
 async def test_action_server_manifest_matches_fixture():
-    from artemis.mcp.action_server import build_action_server
-    from artemis.mcp.actuators import MockActuator
+    from phonepilot.mcp.action_server import build_action_server
+    from phonepilot.mcp.actuators import MockActuator
 
     expected = _fixture("action_server_manifest.json")
     server = build_action_server(MockActuator())
@@ -234,7 +234,7 @@ def test_operator_verbs_lower_onto_manifest_actions():
 def test_manifest_wait_for_delay_uses_milliseconds():
     """The manifest's ``wait_for_delay`` takes ``time_in_ms``, never *seconds*.
 
-    ``artemis/tools/actions/device_actions.py`` used to shadow-register a second
+    ``phonepilot/tools/actions/device_actions.py`` used to shadow-register a second
     ``wait_for_delay`` taking *seconds* while every prompt teaches milliseconds.
     The shadow ToolRegistry channel is deleted; the manifest is the only surface
     left, and its unit must stay milliseconds.
